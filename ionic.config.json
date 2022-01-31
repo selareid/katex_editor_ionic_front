@@ -1,0 +1,7 @@
+{
+  "name": "ionic_katex_front",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
