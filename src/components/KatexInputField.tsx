@@ -2,12 +2,16 @@ import './KatexInputField.css';
 import { useInputHighlighter } from '../hooks/useInputHighlighter';
 import React, { useEffect, useRef } from 'react';
 
-const KatexInputField: React.FC = () => {
+const KatexInputField: React.FC<{onInput?: Function}> = (props) => {
   const inputBox = useRef(null);
   const { input, setRawInput } = useInputHighlighter("Test Input");
 
   const handleInputUpdate = (event: React.FormEvent<HTMLPreElement>) => {
     setRawInput((event.target as HTMLElement).innerText);
+
+    if (props.onInput) {
+      props.onInput(event);
+    }
   }
 
   useEffect(() => {
@@ -29,5 +33,6 @@ const KatexInputField: React.FC = () => {
       </div>
   );
 }
+
 
 export default KatexInputField;
