@@ -1,0 +1,46 @@
+#input_wrapper {
+    font-size: 20px;
+    color: white;
+    caret-color: white;
+    box-sizing: border-box;
+
+    /* float: right; */
+    /* margin: 50px; */
+    background-color: inherit;
+    min-height: 80vh;
+    width: 40vw;
+    min-width: 40vw;
+    border-color: rgb(83, 83, 83);
+    border-style: solid;
+    overflow-x: hidden;
+    overflow-y:scroll;
+
+    position: relative;
+}
+
+
+#inputBox, #highlightBox {
+    margin: 0px;
+
+    top: 0;
+    left: 0;
+
+    min-height: 100%;
+    width: 100%;
+
+    white-space: pre-wrap;       /* Since CSS 2.1 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+
+#inputBox {
+    position: absolute;
+    color: transparent;
+}
+
+#highlightBox {
+    position: absolute;
+    user-select: none;
+}
