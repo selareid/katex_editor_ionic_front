@@ -1,6 +1,7 @@
 import { renderToString } from "katex";
 import React, { useEffect, useRef } from "react";
 import "katex/dist/katex.min.css";
+import "./KatexOutputField.css";
 const katex = require("katex/dist/katex.min.js");
 
 const KatexOutputField: React.FC<{rawKatex: string}> = ({ rawKatex }) => {
@@ -14,7 +15,7 @@ const KatexOutputField: React.FC<{rawKatex: string}> = ({ rawKatex }) => {
     }, [rawKatex]);
 
     return (
-        <span ref={renderPoint}></span>
+        <span ref={renderPoint} id="renderPoint"></span>
     );
 }
 

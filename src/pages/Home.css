@@ -1,0 +1,25 @@
+#IOFlex {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    overflow: scroll;
+}
+
+#input_wrapper, #renderPoint {
+    margin: 10px;
+}
+
+#renderPoint {
+    border-style: solid;
+    border-color: darkgrey;
+}
+
+@media (max-width: 1000px) {
+    #input_wrapper {
+        width: 100vw;
+    }
+
+    #renderPoint {
+        width: 100vw;
+    }
+}
