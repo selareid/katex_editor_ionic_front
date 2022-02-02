@@ -11,10 +11,28 @@ const Home: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Blank</IonTitle>
+          <IonButtons slot='start'>
+            <IonMenuButton menu="start"/>
+          </IonButtons>
+          <IonTitle>Title</IonTitle>
+          <IonProgressBar type="indeterminate"></IonProgressBar>
         </IonToolbar>
       </IonHeader>
-      
+
+      <IonMenu side="start" menuId="first" contentId='homeContent'>
+        <IonHeader>
+          <IonToolbar color="primary">
+            <IonTitle>Start Menu</IonTitle>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent>
+          <IonList>
+            <IonItem>Menu Item</IonItem>
+            <IonItem>Menu Item</IonItem>
+          </IonList>
+        </IonContent>
+      </IonMenu>
+
       <IonContent fullscreen id="homeContent">
         <div id='IOFlex'>
           <KatexInputField defaultInput={rawKatexInput} onInput={(event: React.FormEvent<HTMLPreElement>) => setRawKatexInput((event.target as HTMLElement).innerText)}/>
