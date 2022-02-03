@@ -3,6 +3,7 @@ import { arrowDownOutline, arrowUpOutline } from 'ionicons/icons';
 import { useRef, useState } from 'react';
 import KatexInputField from '../components/KatexInputField';
 import KatexOutputField from '../components/KatexOutputField';
+import NoteSelect from '../components/NoteSelect';
 import './Home.css';
 
 const Home: React.FC = () => {
@@ -44,6 +45,7 @@ const Home: React.FC = () => {
         <IonContent>
           <IonList>
             <IonItem>Menu Item</IonItem>
+            <NoteSelect/>
             <IonItem>Menu Item</IonItem>
           </IonList>
         </IonContent>
