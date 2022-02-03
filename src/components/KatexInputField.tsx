@@ -3,7 +3,7 @@ import { useInputHighlighter } from '../hooks/useInputHighlighter';
 import React, { useEffect, useRef } from 'react';
 
 const KatexInputField: React.FC<{defaultInput?: string, onInput?: Function}> = (props) => {
-  const inputBox = useRef(null);
+  const inputBoxRef = useRef(null);
   const { input, setRawInput } = useInputHighlighter(props.defaultInput || "");
 
   const handleInputUpdate = (event: React.FormEvent<HTMLPreElement>) => {
@@ -15,8 +15,8 @@ const KatexInputField: React.FC<{defaultInput?: string, onInput?: Function}> = (
   }
 
   useEffect(() => {
-    if (inputBox.current !== null) {
-      (inputBox.current as HTMLElement).innerText = input.raw; // set with initial value
+    if (inputBoxRef.current !== null) {
+      (inputBoxRef.current as HTMLElement).innerText = input.raw; // set with initial value
     }
   }, []);
 
@@ -25,7 +25,7 @@ const KatexInputField: React.FC<{defaultInput?: string, onInput?: Function}> = (
     <div id="input_wrapper">
           <pre id="highlightBox" dangerouslySetInnerHTML={{__html: input.highlighted}} />
           <pre id="inputBox"
-            ref={inputBox}
+            ref={inputBoxRef}
             contentEditable={true}
             onInput={handleInputUpdate} >
               {}
