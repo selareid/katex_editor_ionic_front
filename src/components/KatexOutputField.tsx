@@ -1,22 +1,29 @@
-import { renderToString } from "katex";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useImperativeHandle, useRef } from "react";
 import "katex/dist/katex.min.css";
 import "./KatexOutputField.css";
 const katex = require("katex/dist/katex.min.js");
 
-const KatexOutputField: React.FC<{rawKatex: string}> = ({ rawKatex }) => {
-    const renderPoint = useRef(null);
+const KatexOutputField = React.forwardRef<any, {rawKatex: string}>((props, ref) => {
+    const renderPointRef = useRef(null);
 
     useEffect(() => {
-        if (renderPoint.current) {
+        if (renderPointRef.current) {
             // Render katex into the span
-            (renderPoint.current as HTMLElement).innerHTML = katex.renderToString(rawKatex, {displayMode:true, throwOnError: false});
+            (renderPointRef.current as HTMLElement).innerHTML = katex.renderToString(props.rawKatex, {displayMode:true, throwOnError: false});
         }
-    }, [rawKatex]);
+    }, [props.rawKatex]);
+
+    useImperativeHandle(ref, () => {
+        if (renderPointRef.current === null) return {};
+        const cur = renderPointRef.current as HTMLElement;
+    
+        return {
+          getBoundingClientRect: () => cur.getBoundingClientRect(),
+      }});
 
     return (
-        <span ref={renderPoint} id="renderPoint"></span>
+        <span ref={renderPointRef} id="renderPoint"></span>
     );
-}
+});
 
 export default KatexOutputField;

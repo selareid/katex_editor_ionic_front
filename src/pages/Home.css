@@ -1,10 +1,11 @@
+.fabs  {
+    visibility: hidden;
+}
+
 #IOFlex {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-
-    overflow-y: scroll;
-    overflow-x: hidden;
 
     height: 100%;
 }
@@ -24,5 +25,9 @@
     #input_wrapper, #renderPoint {
         width: 100vw;
         min-height: 95%;
+    }
+
+    .fabs  {
+        visibility: visible;
     }
 }
