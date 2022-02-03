@@ -20,6 +20,10 @@ const KatexInputField: React.FC<{defaultInput?: string, onInput?: Function}> = (
     }
   }, []);
 
+  useEffect(() => {
+    (inputBoxRef.current! as HTMLElement).focus();
+  }, []);
+
 
   return (
     <div id="input_wrapper">
