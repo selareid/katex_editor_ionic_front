@@ -7,16 +7,18 @@ import NoteSelect from '../components/NoteSelect';
 import './Home.css';
 
 const Home: React.FC = () => {
+  const [menuOpenCount, setMenuOpenCount] = useState(0); // for refreshing menu items when opened (such as notes list)
   const [rawKatexInput, setRawKatexInput] = useState("Initial Input\\\\[1em] UWU");
   const [scrollButtonDown, setScrollButtonDown] = useState(true);
   const [outputFieldTopPos, setOutputFieldTopPos] = useState(10000);
 
+  const menuRef = useRef<HTMLIonMenuElement>(null);
   const contentRef = useRef<HTMLIonContentElement | null>(null);
-  const outputFieldRef = useRef(null);
+  const outputFieldRef = useRef<HTMLElement>(null);
 
   const handleContentScroll = (event: CustomEvent<ScrollDetail>) => {
     let scroll = event.detail.scrollTop;
-    let outputFieldTop = (outputFieldRef.current! as HTMLElement).getBoundingClientRect().top;
+    let outputFieldTop = outputFieldRef.current!.getBoundingClientRect().top;
 
     setScrollButtonDown(scroll < outputFieldTop);
     setOutputFieldTopPos(scroll + outputFieldTop);
@@ -36,7 +38,7 @@ const Home: React.FC = () => {
         </IonToolbar>
       </IonHeader>
 
-      <IonMenu side="start" menuId="first" contentId='homeContent'>
+      <IonMenu side="start" menuId="first" contentId='homeContent' ref={menuRef} onIonWillOpen={() => setMenuOpenCount(menuOpenCount+1)}>
         <IonHeader>
           <IonToolbar color="primary">
             <IonTitle>Start Menu</IonTitle>
@@ -45,7 +47,7 @@ const Home: React.FC = () => {
         <IonContent>
           <IonList>
             <IonItem>Menu Item</IonItem>
-            <NoteSelect/>
+            <NoteSelect listRefreshConditions={[menuOpenCount]} onChange={(_event) => menuRef.current!.close()}/>
             <IonItem>Menu Item</IonItem>
           </IonList>
         </IonContent>
