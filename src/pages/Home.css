@@ -2,24 +2,27 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    overflow: scroll;
+
+    overflow-y: scroll;
+    overflow-x: hidden;
+
+    height: 100%;
 }
 
 #input_wrapper, #renderPoint {
-    margin: 10px;
+    flex: 1 1 1;
+    margin: 2vh 2vw 2vh 2vw;
+    width: 45vw;
 }
 
 #renderPoint {
     border-style: solid;
-    border-color: darkgrey;
+    border-color: grey;
 }
 
 @media (max-width: 1000px) {
-    #input_wrapper {
+    #input_wrapper, #renderPoint {
         width: 100vw;
-    }
-
-    #renderPoint {
-        width: 100vw;
+        min-height: 95%;
     }
 }
