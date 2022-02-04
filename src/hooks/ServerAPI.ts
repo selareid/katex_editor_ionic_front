@@ -70,8 +70,11 @@ function useServerNote() {
         setNote(n => ({name: n.name, data: "some downloaded stuff FAKE REPLACE SOON, wanted note " + n.name}));
     };
 
-    const uploadNote = (callback: (status: Status) => void) => {
+    const uploadNote = (newNoteData: string, callback: (status: Status) => void) => {
         //TODO send note to server
+
+        setNote(n => ({...n, data: newNoteData}));
+
         //return a status
     }
 
