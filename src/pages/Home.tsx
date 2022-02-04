@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 import KatexInputField, {KatexInputFieldRefFrame} from '../components/KatexInputField';
 import KatexOutputField from '../components/KatexOutputField';
 import NoteSelect from '../components/NoteSelect';
+import ServerAPI from '../hooks/ServerAPI';
 import './Home.css';
 
 const Home: React.FC = () => {
@@ -12,6 +13,7 @@ const Home: React.FC = () => {
   const [rawKatexInput, setRawKatexInput] = useState("Initial Input\\\\[1em] UWU");
   const [scrollButtonDown, setScrollButtonDown] = useState(true);
   const [outputFieldTopPos, setOutputFieldTopPos] = useState(window.innerHeight);
+  const serverNoteAPI = ServerAPI.useServerNote(null);
 
   const menuRef = useRef<HTMLIonMenuElement>(null);
   const contentRef = useRef<HTMLIonContentElement | null>(null);
