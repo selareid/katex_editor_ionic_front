@@ -1,6 +1,6 @@
 import { IonButtons, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonItem, IonList, IonMenu, IonMenuButton, IonPage, IonProgressBar, IonTitle, IonToolbar, ScrollDetail, SelectChangeEventDetail } from '@ionic/react';
 import { arrowDownOutline, arrowUpOutline } from 'ionicons/icons';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import KatexInputField, {KatexInputFieldRefFrame} from '../components/KatexInputField';
 import KatexOutputField from '../components/KatexOutputField';
 import NoteSelect from '../components/NoteSelect';
@@ -19,6 +19,12 @@ const Home: React.FC = () => {
   const contentRef = useRef<HTMLIonContentElement | null>(null);
   const inputFieldRef = useRef<KatexInputFieldRefFrame>(null);
   const outputFieldRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    serverNoteAPI.setNoteName(openNote);
+  }, [openNote]);
+
+
 
   
   const handleContentScroll = (event: CustomEvent<ScrollDetail>) => {
