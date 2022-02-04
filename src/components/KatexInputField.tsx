@@ -1,9 +1,9 @@
 import './KatexInputField.css';
 import { useInputHighlighter } from '../hooks/useInputHighlighter';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useImperativeHandle, useRef } from 'react';
 
-const KatexInputField: React.FC<{defaultInput?: string, onInput?: Function}> = (props) => {
-  const inputBoxRef = useRef(null);
+const KatexInputField = React.forwardRef<any, {defaultInput?: string, onInput?: Function}>((props, ref) => {
+  const inputBoxRef = useRef<HTMLPreElement>(null);
   const { input, setRawInput } = useInputHighlighter(props.defaultInput || "");
 
   const handleInputUpdate = (event: React.FormEvent<HTMLPreElement>) => {
@@ -15,15 +15,23 @@ const KatexInputField: React.FC<{defaultInput?: string, onInput?: Function}> = (
   }
 
   useEffect(() => {
-    if (inputBoxRef.current !== null) {
-      (inputBoxRef.current as HTMLElement).innerText = input.raw; // set with initial value
-    }
+    inputBoxRef.current!.innerText = input.raw; // set with initial value
   }, []);
 
   useEffect(() => {
-    (inputBoxRef.current! as HTMLElement).focus();
+    inputBoxRef.current!.focus();
   }, []);
 
+  useImperativeHandle(ref, () => {
+    if (inputBoxRef.current === null) return {};
+    const cur = inputBoxRef.current;
+
+    return {
+      setInnerTextDontTriggerInput: (text: string) => {
+        setRawInput(text);
+        cur.innerText = text;
+      },
+  }});
 
   return (
     <div id="input_wrapper">
@@ -36,6 +44,10 @@ const KatexInputField: React.FC<{defaultInput?: string, onInput?: Function}> = (
             </pre>
       </div>
   );
+});
+
+export interface KatexInputFieldRefFrame {
+  setInnerTextDontTriggerInput: (text: string) => (void)
 }
 
 

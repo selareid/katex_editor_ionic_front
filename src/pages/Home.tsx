@@ -1,19 +1,21 @@
 import { IonButtons, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonItem, IonList, IonMenu, IonMenuButton, IonPage, IonProgressBar, IonSplitPane, IonTitle, IonToolbar, ScrollDetail } from '@ionic/react';
 import { arrowDownOutline, arrowUpOutline } from 'ionicons/icons';
 import { useRef, useState } from 'react';
-import KatexInputField from '../components/KatexInputField';
+import KatexInputField, {KatexInputFieldRefFrame} from '../components/KatexInputField';
 import KatexOutputField from '../components/KatexOutputField';
 import NoteSelect from '../components/NoteSelect';
 import './Home.css';
 
 const Home: React.FC = () => {
   const [menuOpenCount, setMenuOpenCount] = useState(0); // for refreshing menu items when opened (such as notes list)
+  const [openNote, setOpenNote] = useState<string | null>(null);
   const [rawKatexInput, setRawKatexInput] = useState("Initial Input\\\\[1em] UWU");
   const [scrollButtonDown, setScrollButtonDown] = useState(true);
   const [outputFieldTopPos, setOutputFieldTopPos] = useState(10000);
 
   const menuRef = useRef<HTMLIonMenuElement>(null);
   const contentRef = useRef<HTMLIonContentElement | null>(null);
+  const inputFieldRef = useRef<KatexInputFieldRefFrame>(null);
   const outputFieldRef = useRef<HTMLElement>(null);
 
   const handleContentScroll = (event: CustomEvent<ScrollDetail>) => {
@@ -32,7 +34,7 @@ const Home: React.FC = () => {
             <IonMenuButton menu="start"/>
           </IonButtons>
           
-          <IonTitle>Title</IonTitle>
+          <IonTitle>{openNote ? openNote : "No Note Selected"}</IonTitle>
 
           <IonProgressBar type="indeterminate"></IonProgressBar>
         </IonToolbar>
@@ -47,7 +49,14 @@ const Home: React.FC = () => {
         <IonContent>
           <IonList>
             <IonItem>Menu Item</IonItem>
-            <NoteSelect listRefreshConditions={[menuOpenCount]} onChange={(_event) => menuRef.current!.close()}/>
+            <NoteSelect listRefreshConditions={[menuOpenCount]} onChange={(event) => {
+              const selectedNoteName = event.detail.value;
+              setOpenNote(selectedNoteName);
+              inputFieldRef.current!.setInnerTextDontTriggerInput(selectedNoteName);
+              setRawKatexInput(selectedNoteName);
+
+              menuRef.current!.close()
+              }}/>
             <IonItem>Menu Item</IonItem>
           </IonList>
         </IonContent>
@@ -65,7 +74,7 @@ const Home: React.FC = () => {
         </IonFab>
 
         <div id='IOFlex'>
-          <KatexInputField defaultInput={rawKatexInput} onInput={(event: React.FormEvent<HTMLPreElement>) => setRawKatexInput((event.target as HTMLElement).innerText)}/>
+          <KatexInputField ref={inputFieldRef} defaultInput={rawKatexInput} onInput={(event: React.FormEvent<HTMLPreElement>) => setRawKatexInput((event.target as HTMLElement).innerText)}/>
           <KatexOutputField ref={outputFieldRef} rawKatex={rawKatexInput}/>
         </div>
       </IonContent>
