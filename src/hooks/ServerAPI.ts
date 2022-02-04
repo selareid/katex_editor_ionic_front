@@ -86,7 +86,8 @@ function useServerNote(startingNoteName: string | null) {
 }
 
 const ServerAPI = {
-    useNotesList
+    useNotesList,
+    useServerNote
 };
 
 export default ServerAPI;
