@@ -1,10 +1,10 @@
 import { IonItem, IonLabel, IonSelect, IonSelectOption, SelectChangeEventDetail } from "@ionic/react"
 import { useEffect, useState } from "react";
-import useServerAPI from "../hooks/useServerAPI";
+import ServerAPI from "../hooks/ServerAPI";
 
 
 const NoteSelect: React.FC<{defaultValue?: string, onChange?: ((event: CustomEvent<SelectChangeEventDetail<any>>) => void), listRefreshConditions?: any[]}> = (props) => {
-    const { notesList, refreshNotesList } = useServerAPI();
+    const { notesList, refreshNotesList } = ServerAPI.useNotesList();
     const [selectedNote, setSelectedNote] = useState(props.defaultValue);
 
     useEffect(() => refreshNotesList(), (props.listRefreshConditions === undefined ? [] : props.listRefreshConditions));

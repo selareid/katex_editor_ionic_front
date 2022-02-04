@@ -21,7 +21,7 @@ function shuffle(array: any[]) {
   }
   
 
-export default function useServerAPI() {
+function useNotesList() {
     const [notesList, setNotesList] = useState<string[]>([]);
     const [notesListRefreshCount, setNotesListRefreshCount] = useState(0);
 
@@ -46,3 +46,11 @@ export default function useServerAPI() {
 
     return {notesList, refreshNotesList};
 }
+
+
+
+const ServerAPI = {
+    useNotesList
+};
+
+export default ServerAPI;
