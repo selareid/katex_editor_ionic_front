@@ -1,4 +1,4 @@
-import { IonButtons, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonItem, IonList, IonMenu, IonMenuButton, IonPage, IonProgressBar, IonSplitPane, IonTitle, IonToolbar, ScrollDetail } from '@ionic/react';
+import { IonButtons, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonItem, IonList, IonMenu, IonMenuButton, IonPage, IonProgressBar, IonTitle, IonToolbar, ScrollDetail, SelectChangeEventDetail } from '@ionic/react';
 import { arrowDownOutline, arrowUpOutline } from 'ionicons/icons';
 import { useRef, useState } from 'react';
 import KatexInputField, {KatexInputFieldRefFrame} from '../components/KatexInputField';
@@ -18,6 +18,7 @@ const Home: React.FC = () => {
   const inputFieldRef = useRef<KatexInputFieldRefFrame>(null);
   const outputFieldRef = useRef<HTMLElement>(null);
 
+  
   const handleContentScroll = (event: CustomEvent<ScrollDetail>) => {
     let scroll = event.detail.scrollTop;
     let outputFieldTop = outputFieldRef.current!.getBoundingClientRect().top;
@@ -26,19 +27,33 @@ const Home: React.FC = () => {
     setOutputFieldTopPos(scroll + outputFieldTop);
   };
 
+  const handleNoteSelectedFromList = (event: CustomEvent<SelectChangeEventDetail<any>>) => {
+    const selectedNoteName = event.detail.value;
+    setOpenNote(selectedNoteName);
+    inputFieldRef.current!.setInnerTextDontTriggerInput(selectedNoteName);
+    setRawKatexInput(selectedNoteName);
+
+    menuRef.current!.close()
+  }
+
+  const handleScrollFabClicked = () => {
+    if (!scrollButtonDown) contentRef.current!.scrollToTop(750);
+    else contentRef.current!.scrollToPoint(0, outputFieldTopPos - 70, 750);
+  }
+
+
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot='start'>
             <IonMenuButton menu="start"/>
-          </IonButtons>
-          
+          </IonButtons>    
           <IonTitle>{openNote ? openNote : "No Note Selected"}</IonTitle>
-
           <IonProgressBar type="indeterminate"></IonProgressBar>
         </IonToolbar>
       </IonHeader>
+
 
       <IonMenu side="start" menuId="first" contentId='homeContent' ref={menuRef} onIonWillOpen={() => setMenuOpenCount(menuOpenCount+1)}>
         <IonHeader>
@@ -49,26 +64,16 @@ const Home: React.FC = () => {
         <IonContent>
           <IonList>
             <IonItem>Menu Item</IonItem>
-            <NoteSelect listRefreshConditions={[menuOpenCount]} onChange={(event) => {
-              const selectedNoteName = event.detail.value;
-              setOpenNote(selectedNoteName);
-              inputFieldRef.current!.setInnerTextDontTriggerInput(selectedNoteName);
-              setRawKatexInput(selectedNoteName);
-
-              menuRef.current!.close()
-              }}/>
+            <NoteSelect listRefreshConditions={[menuOpenCount]} onChange={handleNoteSelectedFromList}/>
             <IonItem>Menu Item</IonItem>
           </IonList>
         </IonContent>
       </IonMenu>
 
+
       <IonContent fullscreen id="homeContent" ref={contentRef} scrollEvents={true} onIonScroll={handleContentScroll}>
         <IonFab vertical="bottom" horizontal="end" slot="fixed" className="fabs">
-          <IonFabButton onClick={() => {  {/* Scroll up/down button (small screens)*/}
-                if (!scrollButtonDown) contentRef.current!.scrollToTop(750);
-                else contentRef.current!.scrollToPoint(0, outputFieldTopPos - 70, 750);
-                
-              }}>
+          <IonFabButton onClick={handleScrollFabClicked}> {/* Scroll up/down button (small screens)*/}
             <IonIcon icon={scrollButtonDown ? arrowDownOutline: arrowUpOutline} />
           </IonFabButton>
         </IonFab>
