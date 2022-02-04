@@ -8,12 +8,12 @@ import ServerAPI from '../hooks/ServerAPI';
 import './Home.css';
 
 const Home: React.FC = () => {
-  const [menuOpenCount, setMenuOpenCount] = useState(0); // for refreshing menu items when opened (such as notes list)
   const [openNote, setOpenNote] = useState<string | null>(null);
   const [rawKatexInput, setRawKatexInput] = useState("Initial Input\\\\[1em] UWU");
-  const [scrollButtonDown, setScrollButtonDown] = useState(true);
-  const [outputFieldTopPos, setOutputFieldTopPos] = useState(window.innerHeight);
   const serverNoteAPI = ServerAPI.useServerNote(null);
+  const [menuOpenCount, setMenuOpenCount] = useState(0); // for refreshing menu items when opened (such as notes list)
+  const [scrollButtonDown, setScrollButtonDown] = useState(true); // scroll button direction
+  const [outputFieldTopPos, setOutputFieldTopPos] = useState(window.innerHeight);
 
   const menuRef = useRef<HTMLIonMenuElement>(null);
   const contentRef = useRef<HTMLIonContentElement | null>(null);
