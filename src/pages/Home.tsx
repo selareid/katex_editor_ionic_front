@@ -24,6 +24,12 @@ const Home: React.FC = () => {
     serverNoteAPI.setNoteName(openNote);
   }, [openNote]);
 
+  useEffect(() => {
+    if (!!serverNoteAPI.note.data && serverNoteAPI.note.data !== rawKatexInput) { // let's not override local input with empty
+      inputFieldRef.current!.setInnerTextDontTriggerInput(serverNoteAPI.note.data);
+      setRawKatexInput(serverNoteAPI.note.data);
+    }
+  }, [serverNoteAPI.note.data]);
 
 
   
@@ -36,11 +42,7 @@ const Home: React.FC = () => {
   };
 
   const handleNoteSelectedFromList = (event: CustomEvent<SelectChangeEventDetail<any>>) => {
-    const selectedNoteName = event.detail.value;
-    setOpenNote(selectedNoteName);
-    inputFieldRef.current!.setInnerTextDontTriggerInput(selectedNoteName);
-    setRawKatexInput(selectedNoteName);
-
+    setOpenNote(event.detail.value);
     menuRef.current!.close()
   }
 
