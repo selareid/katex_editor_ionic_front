@@ -45,7 +45,34 @@ function useNotesList() {
     return {notesList, refreshNotesList};
 }
 
+interface Note {
+    name: string | null,
+    data?: string,
+}
 
+interface Status {
+    statusCode: number,
+    statusText: string
+}
+
+function useServerNote() {
+    const [note, setNote] = useState<Note>({name: null});
+
+
+    const downloadNote = () => {
+        //TODO add the server pulling
+        //handle failure somehow O.o
+
+        setNote(n => ({name: n.name, data: "some downloaded stuff FAKE REPLACE SOON, wanted note " + n.name}));
+    };
+
+    const uploadNote = (callback: (status: Status) => void) => {
+        //TODO send note to server
+        //return a status
+    }
+
+    return {note, downloadNote, uploadNote};
+}
 
 const ServerAPI = {
     useNotesList
