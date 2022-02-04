@@ -58,6 +58,10 @@ interface Status {
 function useServerNote() {
     const [note, setNote] = useState<Note>({name: null});
 
+    useEffect(() => {
+        if (note.name === null) setNote({name: null}) // reset data to undefined
+        else downloadNote();
+    }, [note.name]);
 
     const downloadNote = () => {
         //TODO add the server pulling
