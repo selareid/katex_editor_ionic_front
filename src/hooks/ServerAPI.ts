@@ -23,9 +23,12 @@ function shuffle(array: any[]) {
 
 function useNotesList() {
     const [notesList, setNotesList] = useState<string[]>([]);
-    const [notesListRefreshCount, setNotesListRefreshCount] = useState(0);
 
     useEffect(() => {
+        refreshNotesList();
+    }, []);
+
+    const refreshNotesList = () => {
         fetch(API_URI + "notes_list")
         .then(res => res.json())
         .then(
@@ -37,11 +40,6 @@ function useNotesList() {
                 console.log(error);
             }
         )
-
-    }, [notesListRefreshCount]);
-
-    const refreshNotesList = () => {
-        setNotesListRefreshCount(notesListRefreshCount + 1);
     }
 
     return {notesList, refreshNotesList};
