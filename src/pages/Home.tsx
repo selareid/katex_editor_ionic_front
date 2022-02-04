@@ -64,12 +64,12 @@ const Home: React.FC = () => {
 
       <IonContent fullscreen id="homeContent" ref={contentRef} scrollEvents={true} onIonScroll={handleContentScroll}>
         <IonFab vertical="bottom" horizontal="end" slot="fixed" className="fabs">
-          <IonFabButton> {/* Scroll up/down button (small screens)*/}
-            <IonIcon icon={scrollButtonDown ? arrowDownOutline: arrowUpOutline} onClick={() => {
+          <IonFabButton onClick={() => {  {/* Scroll up/down button (small screens)*/}
                 if (!scrollButtonDown) contentRef.current!.scrollToTop(750);
                 else contentRef.current!.scrollToPoint(0, outputFieldTopPos - 70, 750);
-              }
-            } />
+                
+              }}>
+            <IonIcon icon={scrollButtonDown ? arrowDownOutline: arrowUpOutline} />
           </IonFabButton>
         </IonFab>
 
