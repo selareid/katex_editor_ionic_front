@@ -63,7 +63,7 @@ function useServerNote(startingNoteName: string | null) {
         else downloadNote();
     }, [note.name]);
 
-    const setNoteName = (noteName: string) => {
+    const setNoteName = (noteName: string | null) => {
         setNote(n => ({...n, name: noteName}));
     }
 
