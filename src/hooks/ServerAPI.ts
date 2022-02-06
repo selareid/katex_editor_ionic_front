@@ -19,10 +19,9 @@ function shuffle(array: any[]) {
   
     return array;
   }
-  
 
 function useNotesList() {
-    const [notesList, setNotesList] = useState<string[]>([]);
+    const [notesList, setNotesList] = useState<{status: Status, list: string[]}>({status: {statusCode: 200, statusText: "Initialised"}, list: []});
 
     useEffect(() => {
         refreshNotesList();
@@ -30,14 +29,13 @@ function useNotesList() {
 
     const refreshNotesList = () => {
         fetch(API_URI + "notes_list")
-        .then(res => res.json())
+        .then(res => res.text())
         .then(
             (result) => {
-                setNotesList(result)
+                setNotesList({status: {statusCode: 200, statusText: "OK"}, list: result.split("\n")})
             },
             (error) => {
-                setNotesList(shuffle(["1FAKE", "2TRASH", "3TEST", "4THIS"]));
-                console.log(error);
+                setNotesList({status: {statusCode: error.statusCode, statusText: error.statusText}, list: []});
             }
         )
     }
@@ -50,7 +48,7 @@ interface Note {
     data?: string,
 }
 
-interface Status {
+export interface Status {
     statusCode: number,
     statusText: string
 }
