@@ -78,12 +78,22 @@ function useServerNote(startingNoteName: string | null) {
         )
     };
 
-    const uploadNote = (newNoteData: string, callback: (status: Status) => void) => {
-        //TODO send note to server
-
+    const uploadNote = (newNoteData: string, callback?: (status: Status) => void) => {
         setNote(n => ({...n, data: newNoteData}));
 
-        //return a status
+        fetch(API_URI + "notes/" + note.name, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'text/plain',
+            },
+            body: newNoteData,
+        })
+        .then(res => {
+            if (!res.ok) throw {statusCode: res.status, statusText: res.statusText};
+            return res.text();
+        })
+        .then(success => { if (callback) callback({statusCode: 200, statusText: success}); })
+        .catch((error) => { if (callback) callback({statusCode: error.statusCode, statusText: error.statusText}); });
     }
 
     return {note, setNoteName, downloadNote, uploadNote};
