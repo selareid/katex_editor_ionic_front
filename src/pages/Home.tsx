@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import KatexInputField, {KatexInputFieldRefFrame} from '../components/KatexInputField';
 import KatexOutputField from '../components/KatexOutputField';
 import NoteSelect from '../components/NoteSelect';
-import ServerAPI from '../hooks/ServerAPI';
+import ServerAPI, { Status } from '../hooks/ServerAPI';
 import './Home.css';
 
 const Home: React.FC = () => {
@@ -30,6 +30,15 @@ const Home: React.FC = () => {
       setRawKatexInput(serverNoteAPI.note.data);
     }
   }, [serverNoteAPI.note.data]);
+
+  useEffect(() => {
+    if (!!serverNoteAPI.note.name && serverNoteAPI.note.data !== rawKatexInput) {
+      console.log("Attempting note upload to note " + serverNoteAPI.note.name);
+      serverNoteAPI.uploadNote(rawKatexInput, (status: Status) => {
+        console.log("Attempted note uploading to note " + serverNoteAPI.note.name + "\nGot status code: " + status.statusCode + "\nWith text: " + status.statusText);
+      });
+    }
+  }, [rawKatexInput]);
 
 
   
