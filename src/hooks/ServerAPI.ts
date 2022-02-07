@@ -66,10 +66,16 @@ function useServerNote(startingNoteName: string | null) {
     }
 
     const downloadNote = () => {
-        //TODO add the server pulling
-        //handle failure somehow O.o
-
-        setNote(n => ({name: n.name, data: "some downloaded stuff FAKE REPLACE SOON, wanted note " + n.name}));
+        fetch(API_URI + "notes/" + note.name)
+        .then(res => res.text())
+        .then(
+            (result) => {
+                setNote(n => ({name: n.name, data: result}));
+            },
+            (error) => {
+                setNote(n => ({name: n.name, data: "\\text{Failed To Get Note},\n\\\\Wanted note : \\text{" + n.name+"}\n\\\\ Error: " + error}));
+            }
+        )
     };
 
     const uploadNote = (newNoteData: string, callback: (status: Status) => void) => {
