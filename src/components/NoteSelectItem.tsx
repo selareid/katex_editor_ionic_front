@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import ServerAPI from "../hooks/ServerAPI";
 
 
-const NoteSelect: React.FC<{defaultValue?: string, onChange?: ((event: CustomEvent<SelectChangeEventDetail<any>>) => void), listRefreshConditions?: any[]}> = (props) => {
+const NoteSelectItem: React.FC<{defaultValue?: string, onChange?: ((event: CustomEvent<SelectChangeEventDetail<any>>) => void), listRefreshConditions?: any[]}> = (props) => {
     const { notesList, refreshNotesList } = ServerAPI.useNotesList();
     const [selectedNote, setSelectedNote] = useState(props.defaultValue);
 
@@ -20,4 +20,4 @@ const NoteSelect: React.FC<{defaultValue?: string, onChange?: ((event: CustomEve
     </IonItem>;
 }
 
-export default NoteSelect;
+export default NoteSelectItem;

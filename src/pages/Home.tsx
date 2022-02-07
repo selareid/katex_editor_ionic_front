@@ -3,7 +3,7 @@ import { arrowDownOutline, arrowUpOutline } from 'ionicons/icons';
 import { useEffect, useRef, useState } from 'react';
 import KatexInputField, {KatexInputFieldRefFrame} from '../components/KatexInputField';
 import KatexOutputField from '../components/KatexOutputField';
-import NoteSelect from '../components/NoteSelect';
+import NoteSelectItem from '../components/NoteSelectItem';
 import ServerAPI, { Status } from '../hooks/ServerAPI';
 import './Home.css';
 
@@ -83,8 +83,8 @@ const Home: React.FC = () => {
         <IonContent>
           <IonList>
             <IonItem>Menu Item</IonItem>
-            <NoteSelect listRefreshConditions={[menuOpenCount]} onChange={handleNoteSelectedFromList}/>
             <IonItem>Menu Item</IonItem>
+            <NoteSelectItem listRefreshConditions={[menuOpenCount]} onChange={handleNoteSelectedFromList}/>
           </IonList>
         </IonContent>
       </IonMenu>
