@@ -24,14 +24,14 @@ const Home: React.FC = () => {
     serverNoteAPI.setNoteName(openNote);
   }, [openNote]);
 
-  useEffect(() => {
+  useEffect(() => { // sync server to local
     if (!!serverNoteAPI.note.data && serverNoteAPI.note.data !== rawKatexInput) { // let's not override local input with empty
       inputFieldRef.current!.setInnerTextDontTriggerInput(serverNoteAPI.note.data);
       setRawKatexInput(serverNoteAPI.note.data);
     }
   }, [serverNoteAPI.note.data]);
 
-  useEffect(() => {
+  useEffect(() => { // sync local to server
     if (!!serverNoteAPI.note.name && serverNoteAPI.note.data !== rawKatexInput) {
       console.log("Attempting note upload to note " + serverNoteAPI.note.name);
       serverNoteAPI.uploadNote(rawKatexInput, (status: Status) => {
