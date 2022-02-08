@@ -1,4 +1,4 @@
-import { IonButtons, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonItem, IonList, IonMenu, IonMenuButton, IonPage, IonProgressBar, IonTitle, IonToolbar, ScrollDetail, SelectChangeEventDetail } from '@ionic/react';
+import { IonButtons, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonMenu, IonMenuButton, IonPage, IonPopover, IonProgressBar, IonTitle, IonToolbar, ScrollDetail, SelectChangeEventDetail } from '@ionic/react';
 import { arrowDownOutline, arrowUpOutline } from 'ionicons/icons';
 import { useEffect, useRef, useState } from 'react';
 import { RouteComponentProps } from 'react-router';
@@ -27,6 +27,7 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
   const contentRef = useRef<HTMLIonContentElement | null>(null);
   const inputFieldRef = useRef<KatexInputFieldRefFrame>(null);
   const outputFieldRef = useRef<HTMLElement>(null);
+  const newNoteInputField = useRef<HTMLIonInputElement>(null);
 
   useEffect(() => {
     serverNoteAPI.setNoteName(openNote);
@@ -91,9 +92,15 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
         </IonHeader>
         <IonContent>
           <IonList>
-            <IonItem>Menu Item</IonItem>
-            <IonItem>Menu Item</IonItem>
             <NoteSelectItem listRefreshConditions={[menuOpenCount]} onChange={handleNoteSelectedFromList}/>
+            <IonItem button={true} id="newNoteButton">
+              <IonLabel>New Note</IonLabel>
+              <IonPopover trigger="newNoteButton" reference="event" onIonPopoverDidPresent={() => newNoteInputField.current!.getInputElement().then(result => result.focus())}>
+                <IonContent>
+                  <IonInput ref={newNoteInputField} placeholder="Note Name"/>
+                </IonContent>
+              </IonPopover>
+            </IonItem>
           </IonList>
         </IonContent>
       </IonMenu>
