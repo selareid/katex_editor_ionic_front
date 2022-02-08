@@ -1,4 +1,4 @@
-import { IonButtons, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonMenu, IonMenuButton, IonPage, IonPopover, IonProgressBar, IonTitle, IonToolbar, ScrollDetail, SelectChangeEventDetail } from '@ionic/react';
+import { IonButton, IonButtons, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonMenu, IonMenuButton, IonPage, IonPopover, IonProgressBar, IonTitle, IonToolbar, ScrollDetail, SelectChangeEventDetail } from '@ionic/react';
 import { arrowDownOutline, arrowUpOutline } from 'ionicons/icons';
 import { useEffect, useRef, useState } from 'react';
 import { RouteComponentProps } from 'react-router';
@@ -22,12 +22,14 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
   const [menuOpenCount, setMenuOpenCount] = useState(0); // for refreshing menu items when opened (such as notes list)
   const [scrollButtonDown, setScrollButtonDown] = useState(true); // scroll button direction
   const [outputFieldTopPos, setOutputFieldTopPos] = useState(window.innerHeight);
+  const [newNoteInput, setNewNoteInput] = useState<string>("");
 
   const menuRef = useRef<HTMLIonMenuElement>(null);
   const contentRef = useRef<HTMLIonContentElement | null>(null);
   const inputFieldRef = useRef<KatexInputFieldRefFrame>(null);
   const outputFieldRef = useRef<HTMLElement>(null);
-  const newNoteInputField = useRef<HTMLIonInputElement>(null);
+  const newNoteInputFieldRef = useRef<HTMLIonInputElement>(null);
+  const newNotePopoverRef = useRef<HTMLIonPopoverElement>(null);
 
   useEffect(() => {
     serverNoteAPI.setNoteName(openNote);
@@ -95,9 +97,15 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
             <NoteSelectItem listRefreshConditions={[menuOpenCount]} onChange={handleNoteSelectedFromList}/>
             <IonItem button={true} id="newNoteButton">
               <IonLabel>New Note</IonLabel>
-              <IonPopover trigger="newNoteButton" reference="event" onIonPopoverDidPresent={() => newNoteInputField.current!.getInputElement().then(result => result.focus())}>
+              <IonPopover ref={newNotePopoverRef} trigger="newNoteButton" reference="event" onIonPopoverDidPresent={() => newNoteInputFieldRef.current!.getInputElement().then(result => result.focus())}>
                 <IonContent>
-                  <IonInput ref={newNoteInputField} placeholder="Note Name"/>
+                  <IonInput ref={newNoteInputFieldRef} placeholder="Note Name" onIonChange={e => setNewNoteInput(e.detail.value || "")}/>
+                  <IonButton color='tertiary' onClick={_e => {
+                    setOpenNote(newNoteInput);
+                    menuRef.current!.close();
+                    newNotePopoverRef.current!.dismiss();
+                    window.history.pushState({}, '', "/notes/" + newNoteInput);
+                  }}>Create Note</IonButton>
                 </IonContent>
               </IonPopover>
             </IonItem>
