@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const API_URI = "https://example.com/";
+const API_URI = "https://example.com/api/";
 
 function shuffle(array: any[]) {
     let currentIndex = array.length,  randomIndex;
