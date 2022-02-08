@@ -1,14 +1,22 @@
 import { IonButtons, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonItem, IonList, IonMenu, IonMenuButton, IonPage, IonProgressBar, IonTitle, IonToolbar, ScrollDetail, SelectChangeEventDetail } from '@ionic/react';
 import { arrowDownOutline, arrowUpOutline } from 'ionicons/icons';
 import { useEffect, useRef, useState } from 'react';
+import { RouteComponentProps } from 'react-router';
 import KatexInputField, {KatexInputFieldRefFrame} from '../components/KatexInputField';
 import KatexOutputField from '../components/KatexOutputField';
 import NoteSelectItem from '../components/NoteSelectItem';
 import ServerAPI, { Status } from '../hooks/ServerAPI';
 import './Home.css';
 
-const Home: React.FC = () => {
-  const [openNote, setOpenNote] = useState<string | null>(null);
+interface NoteNamePageProps
+  extends RouteComponentProps<{
+    noteName: string;
+  }> {}
+
+const Home: React.FC<NoteNamePageProps> = ({ match }) => {
+  const urlNoteName: string | undefined = match.params.noteName;
+
+  const [openNote, setOpenNote] = useState<string | null>(urlNoteName || null);
   const [rawKatexInput, setRawKatexInput] = useState("Initial Input\\\\[1em] UWU");
   const serverNoteAPI = ServerAPI.useServerNote(null);
   const [menuOpenCount, setMenuOpenCount] = useState(0); // for refreshing menu items when opened (such as notes list)
