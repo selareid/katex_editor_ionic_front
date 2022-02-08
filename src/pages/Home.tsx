@@ -13,7 +13,7 @@ interface NoteNamePageProps
     noteName: string;
   }> {}
 
-const Home: React.FC<NoteNamePageProps> = ({ match }) => {
+const Home: React.FC<NoteNamePageProps> = ({ match, history }) => {
   const urlNoteName: string | undefined = match.params.noteName;
 
   const [openNote, setOpenNote] = useState<string | null>(urlNoteName || null);
@@ -59,8 +59,9 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
   };
 
   const handleNoteSelectedFromList = (event: CustomEvent<SelectChangeEventDetail<any>>) => {
-    setOpenNote(event.detail.value);
-    menuRef.current!.close()
+    history.push("/notes/" + event.detail.value);
+    // setOpenNote(event.detail.value);
+    // menuRef.current!.close()
   }
 
   const handleScrollFabClicked = () => {
