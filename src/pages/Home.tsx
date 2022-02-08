@@ -13,7 +13,7 @@ interface NoteNamePageProps
     noteName: string;
   }> {}
 
-const Home: React.FC<NoteNamePageProps> = ({ match, history }) => {
+const Home: React.FC<NoteNamePageProps> = ({ match }) => {
   const urlNoteName: string | undefined = match.params.noteName;
 
   const [openNote, setOpenNote] = useState<string | null>(urlNoteName || null);
@@ -59,9 +59,9 @@ const Home: React.FC<NoteNamePageProps> = ({ match, history }) => {
   };
 
   const handleNoteSelectedFromList = (event: CustomEvent<SelectChangeEventDetail<any>>) => {
-    history.push("/notes/" + event.detail.value);
-    // setOpenNote(event.detail.value);
-    // menuRef.current!.close()
+    setOpenNote(event.detail.value);
+    menuRef.current!.close();
+    window.history.pushState({}, '', "/notes/" + event.detail.value); //used window.history.pushState because using history (prop) for history.push(<url>) made menu unable to open
   }
 
   const handleScrollFabClicked = () => {

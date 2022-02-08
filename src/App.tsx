@@ -26,7 +26,7 @@ setupIonicReact();
 
 const App: React.FC = () => (
   <IonApp>
-    <IonReactRouter forceRefresh={true}>
+    <IonReactRouter>
       <IonRouterOutlet>
         <Route exact path="/" component={Home} />
         <Route path="/notes/:noteName" component={Home}/>
