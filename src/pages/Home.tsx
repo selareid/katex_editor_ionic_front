@@ -94,7 +94,7 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
         </IonHeader>
         <IonContent>
           <IonList>
-            <NoteSelectItem listRefreshConditions={[menuOpenCount]} onChange={handleNoteSelectedFromList}/>
+            <NoteSelectItem selectedNote={openNote} onChange={handleNoteSelectedFromList} listRefreshConditions={[menuOpenCount]} />
             <IonItem button={true} id="newNoteButton">
               <IonLabel>New Note</IonLabel>
               <IonPopover ref={newNotePopoverRef} trigger="newNoteButton" reference="event" onIonPopoverDidPresent={() => newNoteInputFieldRef.current!.getInputElement().then(result => result.focus())}>
