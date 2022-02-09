@@ -11,7 +11,10 @@ function useNotesList() {
 
     const refreshNotesList = () => {
         fetch(API_URI + "notes_list")
-        .then(res => res.text())
+        .then(res => {
+            if (!res.ok) throw {statusCode: res.status, statusText: res.statusText};
+            return res.text();
+        })
         .then(
             (result) => {
                 setNotesList({status: {statusCode: 200, statusText: "OK"}, list: result.split("\n")})
@@ -49,7 +52,10 @@ function useServerNote(startingNoteName: string | null) {
 
     const downloadNote = () => {
         fetch(API_URI + "notes/" + note.name)
-        .then(res => res.text())
+        .then(res => {
+            if (!res.ok) throw {statusCode: res.status, statusText: res.statusText};
+            return res.text();
+        })
         .then(
             (result) => {
                 setNote(n => ({name: n.name, data: result}));
