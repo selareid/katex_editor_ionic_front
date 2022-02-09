@@ -23,6 +23,7 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
   const [scrollButtonDown, setScrollButtonDown] = useState(true); // scroll button direction
   const [outputFieldTopPos, setOutputFieldTopPos] = useState(window.innerHeight);
   const [newNoteInput, setNewNoteInput] = useState<string>("");
+  const [forceInputFieldTextRefreshCounter, forceInputFieldTextRefresh] = useState(0);
 
   const menuRef = useRef<HTMLIonMenuElement>(null);
   const contentRef = useRef<HTMLIonContentElement | null>(null);
@@ -35,10 +36,14 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
     serverNoteAPI.setNoteName(openNote);
   }, [openNote]);
 
+  useEffect(() => {
+    inputFieldRef.current!.setInnerTextDontTriggerInput(rawKatexInput);
+  }, [forceInputFieldTextRefreshCounter]);
+
   useEffect(() => { // sync server to local
     if (!!serverNoteAPI.note.data && serverNoteAPI.note.data !== rawKatexInput) { // let's not override local input with empty
-      inputFieldRef.current!.setInnerTextDontTriggerInput(serverNoteAPI.note.data);
       setRawKatexInput(serverNoteAPI.note.data);
+      forceInputFieldTextRefresh(n => n + 1);
     }
   }, [serverNoteAPI.note.data]);
 
