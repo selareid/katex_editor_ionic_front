@@ -2,6 +2,16 @@ import { useEffect, useState } from "react";
 
 const API_URI = "https://example.com/api/";
 
+interface Note {
+    name: string | null,
+    data?: string,
+}
+
+export interface Status {
+    statusCode: number,
+    statusText: string
+}
+
 function useNotesList() {
     const [notesList, setNotesList] = useState<{status: Status, list: string[]}>({status: {statusCode: 200, statusText: "Initialised"}, list: []});
 
@@ -26,16 +36,6 @@ function useNotesList() {
     }
 
     return {notesList, refreshNotesList};
-}
-
-interface Note {
-    name: string | null,
-    data?: string,
-}
-
-export interface Status {
-    statusCode: number,
-    statusText: string
 }
 
 function useServerNote(startingNoteName: string | null) {
