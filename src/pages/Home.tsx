@@ -23,6 +23,7 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
   const [scrollButtonDown, setScrollButtonDown] = useState(true); // scroll button direction
   const [outputFieldTopPos, setOutputFieldTopPos] = useState(window.innerHeight);
   const [newNoteInput, setNewNoteInput] = useState<string>("");
+  const {macros, refreshMacros} = ServerAPI.useMacros();
   const [forceInputFieldTextRefreshCounter, forceInputFieldTextRefresh] = useState(0);
 
   const menuRef = useRef<HTMLIonMenuElement>(null);
@@ -31,6 +32,10 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
   const outputFieldRef = useRef<HTMLElement>(null);
   const newNoteInputFieldRef = useRef<HTMLIonInputElement>(null);
   const newNotePopoverRef = useRef<HTMLIonPopoverElement>(null);
+
+  useEffect(() => {
+    refreshMacros();
+  }, []);
 
   useEffect(() => {
     serverNoteAPI.setNoteName(openNote);
@@ -77,6 +82,10 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
     else contentRef.current!.scrollToPoint(0, outputFieldTopPos - 70, 750);
   }
 
+  const handleMacrosButtonClicked = (_event: React.MouseEvent<HTMLIonItemElement, MouseEvent>) => {
+    setRawKatexInput(old => macros.data + '\n' + old);
+    forceInputFieldTextRefresh(n => n + 1);
+  }
 
   return (
     <IonPage>
@@ -114,6 +123,7 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
                 </IonContent>
               </IonPopover>
             </IonItem>
+            <IonItem button={true} onClick={handleMacrosButtonClicked}>Import Macros</IonItem>
           </IonList>
         </IonContent>
       </IonMenu>
