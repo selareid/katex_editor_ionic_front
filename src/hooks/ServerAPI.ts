@@ -87,9 +87,28 @@ function useServerNote(startingNoteName: string | null) {
     return {note, setNoteName, downloadNote, uploadNote};
 }
 
+function useMacros() {
+    const [macros, setMacros] = useState<{status: Status, data?: string}>({status: {statusCode: 200, statusText: "Initialised"}, data: undefined});
+
+    const refreshMacros = () => {
+        fetch(API_URI + "macros")
+        .then(res => {
+            if (!res.ok) throw {statusCode: res.status, statusText: res.statusText};
+            return res.text();
+        })
+        .then(
+            success => setMacros({status: {statusCode: 200, statusText: "OK"}, data: success}),
+            error => setMacros({status: {statusCode: error.statusCode, statusText: error.statusText}, data: undefined}),
+        )
+    }
+
+    return {macros, refreshMacros}
+}
+
 const ServerAPI = {
     useNotesList,
-    useServerNote
+    useServerNote,
+    useMacros
 };
 
 export default ServerAPI;
