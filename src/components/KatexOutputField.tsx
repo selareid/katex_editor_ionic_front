@@ -3,7 +3,7 @@ import "katex/dist/katex.min.css";
 import "./KatexOutputField.css";
 const katex = require("katex/dist/katex.min.js");
 
-const KatexOutputField = React.forwardRef<any, {rawKatex: string}>((props, ref) => {
+const KatexOutputField = React.forwardRef<any, {rawKatex: string, width?: string}>((props, ref) => {
     const renderPointRef = useRef(null);
 
     useEffect(() => {
@@ -22,7 +22,7 @@ const KatexOutputField = React.forwardRef<any, {rawKatex: string}>((props, ref) 
       }});
 
     return (
-        <span ref={renderPointRef} id="renderPoint"></span>
+        <span ref={renderPointRef} id="renderPoint" style={props.width ? {width: props.width} : undefined}></span>
     );
 });
 

@@ -25,6 +25,8 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
   const [newNoteInput, setNewNoteInput] = useState<string>("");
   const {macros, refreshMacros} = ServerAPI.useMacros();
   const [forceInputFieldTextRefreshCounter, forceInputFieldTextRefresh] = useState(0);
+  const [inputFieldWidth, setInputFieldWidth] = useState<string>(); // also hides field when === "0"
+  const [outputFieldWidth, setOutputFieldWidth] = useState<string>(); // also hides field when === "0"
 
   const menuRef = useRef<HTMLIonMenuElement>(null);
   const contentRef = useRef<HTMLIonContentElement | null>(null);
@@ -42,7 +44,7 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
   }, [openNote]);
 
   useEffect(() => {
-    inputFieldRef.current!.setInnerTextDontTriggerInput(rawKatexInput);
+    if (inputFieldRef.current) inputFieldRef.current.setInnerTextDontTriggerInput(rawKatexInput);
   }, [forceInputFieldTextRefreshCounter]);
 
   useEffect(() => { // sync server to local
@@ -61,11 +63,12 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
     }
   }, [rawKatexInput]);
 
-
   
   const handleContentScroll = (event: CustomEvent<ScrollDetail>) => {
+    if (!outputFieldRef.current) return;
+
     let scroll = event.detail.scrollTop;
-    let outputFieldTop = outputFieldRef.current!.getBoundingClientRect().top;
+    let outputFieldTop = outputFieldRef.current.getBoundingClientRect().top;
 
     setScrollButtonDown(scroll < outputFieldTop);
     setOutputFieldTopPos(scroll + outputFieldTop);
@@ -86,6 +89,21 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
   const handleMacrosButtonClicked = (_event: React.MouseEvent<HTMLIonItemElement, MouseEvent>) => {
     setRawKatexInput(old => macros.data + '\n' + old);
     forceInputFieldTextRefresh(n => n + 1);
+  }
+
+  const handleIOFieldToggle = (_event: React.MouseEvent<HTMLIonItemElement, MouseEvent>) => {
+    if (inputFieldWidth !== "0" && outputFieldWidth !== "0") { // set input only
+      setInputFieldWidth("95vw");
+      setOutputFieldWidth("0");
+    }
+    else if (inputFieldWidth !== "0") { // set output only
+      setInputFieldWidth("0");
+      setOutputFieldWidth("95vw");
+    }
+    else { // back to default
+      setInputFieldWidth(undefined);
+      setOutputFieldWidth(undefined);
+    }
   }
 
   return (
@@ -129,6 +147,7 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
               window.history.pushState({}, '', "/");
             }} >Local Note</IonItem>
             <IonItem button={true} onClick={handleMacrosButtonClicked}>Import Macros</IonItem>
+            <IonItem button={true} onClick={handleIOFieldToggle}>Toggle Input/Output Fields</IonItem>
           </IonList>
         </IonContent>
       </IonMenu>
@@ -142,8 +161,8 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
         </IonFab>
 
         <div id='IOFlex'>
-          <KatexInputField ref={inputFieldRef} defaultInput={rawKatexInput} onInput={(event: React.FormEvent<HTMLPreElement>) => setRawKatexInput((event.target as HTMLElement).innerText)}/>
-          <KatexOutputField ref={outputFieldRef} rawKatex={rawKatexInput}/>
+          {inputFieldWidth !== "0" ? <KatexInputField ref={inputFieldRef} width={inputFieldWidth} defaultInput={rawKatexInput} onInput={(event: React.FormEvent<HTMLPreElement>) => setRawKatexInput((event.target as HTMLElement).innerText)} /> : null}
+          {outputFieldWidth !== "0" ? <KatexOutputField ref={outputFieldRef} width={outputFieldWidth} rawKatex={rawKatexInput}/> : null}
         </div>
       </IonContent>
     </IonPage>
