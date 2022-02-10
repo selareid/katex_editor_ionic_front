@@ -2,6 +2,14 @@
     visibility: hidden;
 }
 
+.headerStatusBox {
+    margin: 0px;
+    margin-right: 1em;
+    min-width: 20em;
+    text-align: left;
+    white-space: pre-line;
+}
+
 #IOFlex {
     display: flex;
     flex-direction: row;

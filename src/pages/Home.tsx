@@ -27,6 +27,7 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
   const [forceInputFieldTextRefreshCounter, forceInputFieldTextRefresh] = useState(0);
   const [inputFieldWidth, setInputFieldWidth] = useState<string>(); // also hides field when === "0"
   const [outputFieldWidth, setOutputFieldWidth] = useState<string>(); // also hides field when === "0"
+  const [statusText, setStatusText] = useState("Status: some status text goes here\nplaceholder text");
 
   const menuRef = useRef<HTMLIonMenuElement>(null);
   const contentRef = useRef<HTMLIonContentElement | null>(null);
@@ -115,6 +116,7 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
           </IonButtons>    
           <IonTitle>{openNote ? openNote : "No Note Selected"}</IonTitle>
           <IonProgressBar type="indeterminate"></IonProgressBar>
+          <p className="headerStatusBox" slot='end'>{statusText}</p>
         </IonToolbar>
       </IonHeader>
 
