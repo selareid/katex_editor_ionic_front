@@ -122,7 +122,7 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
       <IonMenu side="start" menuId="first" contentId='homeContent' ref={menuRef} onIonWillOpen={() => setMenuOpenCount(menuOpenCount+1)}>
         <IonHeader>
           <IonToolbar color="primary">
-            <IonTitle>Start Menu</IonTitle>
+            <IonTitle>Katex Editor</IonTitle>
           </IonToolbar>
         </IonHeader>
         <IonContent>
