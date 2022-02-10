@@ -42,6 +42,10 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
 
   useEffect(() => {
     serverNoteAPI.setNoteName(openNote);
+
+    //used window.history.pushState because using history (prop) for history.push(<url>) made menu unable to open
+    if (openNote) window.history.pushState({}, '', "/notes/" + openNote);
+    else window.history.pushState({}, '', "/");
   }, [openNote]);
 
   useEffect(() => {
@@ -79,7 +83,6 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
   const handleNoteListSelectionChange = (event: CustomEvent<SelectChangeEventDetail<any>>) => {
     setOpenNote(event.detail.value);
     menuRef.current!.close();
-    if (event.detail.value) window.history.pushState({}, '', "/notes/" + event.detail.value); //used window.history.pushState because using history (prop) for history.push(<url>) made menu unable to open
   }
 
   const handleScrollFabClicked = () => {
@@ -138,14 +141,12 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
                     setOpenNote(newNoteInput);
                     menuRef.current!.close();
                     newNotePopoverRef.current!.dismiss();
-                    window.history.pushState({}, '', "/notes/" + newNoteInput);
                   }}>Create Note</IonButton>
                 </IonContent>
               </IonPopover>
             </IonItem>
             <IonItem button={true} onClick={() => {
               setOpenNote(null);
-              window.history.pushState({}, '', "/");
             }} >Local Note</IonItem>
             <IonItem button={true} onClick={handleMacrosButtonClicked}>Import Macros</IonItem>
             <IonItem button={true} onClick={handleIOFieldToggle}>Toggle Input/Output Fields</IonItem>
