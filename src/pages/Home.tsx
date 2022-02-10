@@ -1,4 +1,4 @@
-import { IonButton, IonButtons, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonMenu, IonMenuButton, IonPage, IonPopover, IonProgressBar, IonTitle, IonToolbar, ScrollDetail, SelectChangeEventDetail } from '@ionic/react';
+import { IonButton, IonButtons, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonMenu, IonMenuButton, IonPage, IonPopover, IonTitle, IonToolbar, ScrollDetail, SelectChangeEventDetail } from '@ionic/react';
 import { arrowDownOutline, arrowUpOutline } from 'ionicons/icons';
 import { useEffect, useRef, useState } from 'react';
 import { RouteComponentProps } from 'react-router';
@@ -115,7 +115,6 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
             <IonMenuButton menu="start"/>
           </IonButtons>    
           <IonTitle>{openNote ? openNote : "No Note Selected"}</IonTitle>
-          <IonProgressBar type="indeterminate"></IonProgressBar>
           <p className="headerStatusBox" slot='end'>{statusText}</p>
         </IonToolbar>
       </IonHeader>
