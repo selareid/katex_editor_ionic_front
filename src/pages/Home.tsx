@@ -46,7 +46,7 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
   }, [forceInputFieldTextRefreshCounter]);
 
   useEffect(() => { // sync server to local
-    if (!!serverNoteAPI.note.data && serverNoteAPI.note.data !== rawKatexInput) { // let's not override local input with empty
+    if (serverNoteAPI.note.data !== undefined && serverNoteAPI.note.data !== rawKatexInput) {
       setRawKatexInput(serverNoteAPI.note.data);
       forceInputFieldTextRefresh(n => n + 1);
     }
@@ -71,10 +71,11 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
     setOutputFieldTopPos(scroll + outputFieldTop);
   };
 
-  const handleNoteSelectedFromList = (event: CustomEvent<SelectChangeEventDetail<any>>) => {
+  //Note: this runs on note change also because note list selection gets changed when different note selected
+  const handleNoteListSelectionChange = (event: CustomEvent<SelectChangeEventDetail<any>>) => {
     setOpenNote(event.detail.value);
     menuRef.current!.close();
-    window.history.pushState({}, '', "/notes/" + event.detail.value); //used window.history.pushState because using history (prop) for history.push(<url>) made menu unable to open
+    if (event.detail.value) window.history.pushState({}, '', "/notes/" + event.detail.value); //used window.history.pushState because using history (prop) for history.push(<url>) made menu unable to open
   }
 
   const handleScrollFabClicked = () => {
@@ -108,7 +109,7 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
         </IonHeader>
         <IonContent>
           <IonList>
-            <NoteSelectItem selectedNote={openNote} onChange={handleNoteSelectedFromList} listRefreshConditions={[menuOpenCount]} />
+            <NoteSelectItem selectedNote={openNote} onChange={handleNoteListSelectionChange} listRefreshConditions={[menuOpenCount]} />
             <IonItem button={true} id="newNoteButton">
               <IonLabel>New Note</IonLabel>
               <IonPopover ref={newNotePopoverRef} trigger="newNoteButton" reference="event" onIonPopoverDidPresent={() => newNoteInputFieldRef.current!.getInputElement().then(result => result.focus())}>
@@ -123,6 +124,10 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
                 </IonContent>
               </IonPopover>
             </IonItem>
+            <IonItem button={true} onClick={() => {
+              setOpenNote(null);
+              window.history.pushState({}, '', "/");
+            }} >Local Note</IonItem>
             <IonItem button={true} onClick={handleMacrosButtonClicked}>Import Macros</IonItem>
           </IonList>
         </IonContent>
