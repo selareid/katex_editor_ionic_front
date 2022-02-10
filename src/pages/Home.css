@@ -10,19 +10,19 @@
     height: 100%;
 }
 
-#input_wrapper, #renderPoint {
+.katexIOElement {
     flex: 1 1 1;
     margin: 2vh 2vw 2vh 2vw;
     width: 45vw;
 }
 
-#renderPoint {
+.katexOutputElement {
     border-style: solid;
     border-color: grey;
 }
 
 @media (max-width: 1000px) {
-    #input_wrapper, #renderPoint {
+    .katexIOElement {
         width: 100vw;
         min-height: 95%;
     }

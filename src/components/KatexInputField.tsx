@@ -34,7 +34,7 @@ const KatexInputField = React.forwardRef<any, {defaultInput?: string, onInput?: 
   }});
 
   return (
-    <div id="input_wrapper" style={props.width ? {width: props.width} : undefined}>
+    <div className="katexInputField katexIOElement" style={props.width ? {width: props.width} : undefined}>
           <pre id="highlightBox" dangerouslySetInnerHTML={{__html: input.highlighted}} />
           <pre id="inputBox"
             ref={inputBoxRef}

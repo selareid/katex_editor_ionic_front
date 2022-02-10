@@ -22,7 +22,7 @@ const KatexOutputField = React.forwardRef<any, {rawKatex: string, width?: string
       }});
 
     return (
-        <span ref={renderPointRef} id="renderPoint" style={props.width ? {width: props.width} : undefined}></span>
+        <span ref={renderPointRef} className="katexIOElement katexOutputElement" style={props.width ? {width: props.width} : undefined}></span>
     );
 });
 

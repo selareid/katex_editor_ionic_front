@@ -1,11 +1,9 @@
-#input_wrapper {
+.katexInputField {
     font-size: 20px;
     color: white;
     caret-color: white;
     box-sizing: border-box;
-
-    /* float: right; */
-    /* margin: 50px; */
+    
     background-color: inherit;
     min-height: 80vh;
     width: 40vw;
