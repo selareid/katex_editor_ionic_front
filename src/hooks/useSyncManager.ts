@@ -1,0 +1,31 @@
+import { useEffect, useState } from "react";
+
+interface syncStatus {
+    inSync: boolean,
+    syncText: string,
+}
+
+const useSyncManager = () => {
+    const [localSyncCounter, setLocalSyncCounter] = useState(0);
+    const [serverSyncedCount, setServerSyncCount] = useState(0);
+    const [syncStatus, setSyncStatus] = useState<syncStatus>();
+
+    useEffect(() => { // update sync status
+        if (localSyncCounter === serverSyncedCount) setSyncStatus({inSync: true, syncText: "Synced with Server"});
+        else setSyncStatus({inSync: false, syncText: `Out of Sync | ${serverSyncedCount} vs ${localSyncCounter}`});
+    }, [localSyncCounter, serverSyncedCount]);
+
+    const incrementLocalSync = () => {
+        setLocalSyncCounter(n => n+1);
+    }
+
+    return {
+        localSyncCounter,
+        incrementLocalSync,
+        serverSyncedCount,
+        setServerSyncCount,
+        syncStatus
+    };
+};
+
+export default useSyncManager;
