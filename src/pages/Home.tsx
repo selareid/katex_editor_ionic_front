@@ -6,6 +6,7 @@ import KatexInputField, {KatexInputFieldRefFrame} from '../components/KatexInput
 import KatexOutputField from '../components/KatexOutputField';
 import NoteSelectItem from '../components/NoteSelectItem';
 import ServerAPI, { Status } from '../hooks/ServerAPI';
+import useSyncManager from '../hooks/useSyncManager';
 import './Home.css';
 
 interface NoteNamePageProps
@@ -27,7 +28,9 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
   const [forceInputFieldTextRefreshCounter, forceInputFieldTextRefresh] = useState(0);
   const [inputFieldWidth, setInputFieldWidth] = useState<string>(); // also hides field when === "0"
   const [outputFieldWidth, setOutputFieldWidth] = useState<string>(); // also hides field when === "0"
-  const [statusText, setStatusText] = useState("Status: some status text goes here\nplaceholder text");
+  const [statusText, setStatusText] = useState("");
+
+  const {localSyncCounter, incrementLocalSync, serverSyncedCount, setServerSyncCount, syncStatus} = useSyncManager();
 
   const menuRef = useRef<HTMLIonMenuElement>(null);
   const contentRef = useRef<HTMLIonContentElement | null>(null);
@@ -45,7 +48,10 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
 
     //used window.history.pushState because using history (prop) for history.push(<url>) made menu unable to open
     if (openNote) window.history.pushState({}, '', "/notes/" + openNote);
-    else window.history.pushState({}, '', "/");
+    else {
+      window.history.pushState({}, '', "/");
+      setStatusText("");
+    }
   }, [openNote]);
 
   useEffect(() => {
@@ -56,15 +62,25 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
     if (serverNoteAPI.note.data !== undefined && serverNoteAPI.note.data !== rawKatexInput) {
       setRawKatexInput(serverNoteAPI.note.data);
       forceInputFieldTextRefresh(n => n + 1);
+      setStatusText("Attempted to download note");
     }
   }, [serverNoteAPI.note.data]);
 
+  useEffect(() => {
+    setStatusText(syncStatus?.syncText || "");
+  }, [syncStatus]);
+
   useEffect(() => { // sync local to server
     if (!!serverNoteAPI.note.name && serverNoteAPI.note.data !== rawKatexInput) {
-      console.log("Attempting note upload to note " + serverNoteAPI.note.name);
-      serverNoteAPI.uploadNote(rawKatexInput, (status: Status) => {
-        console.log("Attempted note uploading to note " + serverNoteAPI.note.name + "\nGot status code: " + status.statusCode + "\nWith text: " + status.statusText);
-      });
+      serverNoteAPI.uploadNote(rawKatexInput, (status: Status, syncNumber) => {
+        if (status.statusCode === 200) setServerSyncCount(syncNumber || NaN);
+        else {
+          setServerSyncCount(NaN);
+          console.log(status.statusCode + "\n " + status.statusText);
+        }
+      }, localSyncCounter + 1);
+
+      incrementLocalSync();
     }
   }, [rawKatexInput]);
 
