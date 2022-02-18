@@ -66,7 +66,7 @@ function useServerNote(startingNoteName: string | null) {
         )
     };
 
-    const uploadNote = (newNoteData: string, callback?: (status: Status) => void) => {
+    const uploadNote = (newNoteData: string, callback?: (status: Status, syncNumber?: number) => void, syncNumber?: number) => {
         setNote(n => ({...n, data: newNoteData}));
 
         fetch(API_URI + "notes/" + note.name, {
@@ -80,8 +80,8 @@ function useServerNote(startingNoteName: string | null) {
             if (!res.ok) throw {statusCode: res.status, statusText: res.statusText};
             return res.text();
         })
-        .then(success => { if (callback) callback({statusCode: 200, statusText: success}); })
-        .catch((error) => { if (callback) callback({statusCode: error.statusCode, statusText: error.statusText}); });
+        .then(success => { if (callback) callback({statusCode: 200, statusText: success}, syncNumber); })
+        .catch((error) => { if (callback) callback({statusCode: error.statusCode, statusText: error.statusText}, syncNumber); });
     }
 
     return {note, setNoteName, downloadNote, uploadNote};
