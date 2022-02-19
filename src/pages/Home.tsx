@@ -9,6 +9,8 @@ import ServerAPI, { Status } from '../hooks/ServerAPI';
 import useSyncManager from '../hooks/useSyncManager';
 import './Home.css';
 
+const UNSAVED_CHANGES_PROMPT = "Are you sure you want to leave — information you’ve entered may not be saved."
+
 interface NoteNamePageProps
   extends RouteComponentProps<{
     noteName: string;
@@ -70,6 +72,9 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
   useEffect(() => {
     setStatusText(n => syncStatus?.syncText || n);
   }, [syncStatus]);
+
+  useEffect(() => {
+    window.onbeforeunload = !syncStatus || syncStatus.inSync ? null : () => true;
   }, [syncStatus]);
 
   useEffect(() => { // sync local to server
@@ -99,8 +104,10 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
 
   //Note: this runs on note change also because note list selection gets changed when different note selected
   const handleNoteListSelectionChange = (event: CustomEvent<SelectChangeEventDetail<any>>) => {
-    setOpenNote(event.detail.value);
-    menuRef.current!.close();
+    if (event.detail.value !== null && event.detail.value !== openNote && (!syncStatus || syncStatus.inSync || window.confirm(UNSAVED_CHANGES_PROMPT))) {
+      setOpenNote(event.detail.value);
+      menuRef.current!.close();
+    }
   }
 
   const handleScrollFabClicked = () => {
@@ -127,6 +134,7 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
       setOutputFieldWidth(undefined);
     }
   }
+
 
   return (
     <IonPage>
@@ -156,15 +164,18 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
                 <IonContent>
                   <IonInput ref={newNoteInputFieldRef} placeholder="Note Name" onIonChange={e => setNewNoteInput(e.detail.value || "")}/>
                   <IonButton color='tertiary' onClick={_e => {
-                    setOpenNote(newNoteInput);
-                    menuRef.current!.close();
-                    newNotePopoverRef.current!.dismiss();
+                    if (!syncStatus || syncStatus.inSync || window.confirm(UNSAVED_CHANGES_PROMPT)) {
+                      resetSyncStatus();
+                      setOpenNote(newNoteInput);
+                      menuRef.current!.close();
+                      newNotePopoverRef.current!.dismiss();
+                    }
                   }}>Create Note</IonButton>
                 </IonContent>
               </IonPopover>
             </IonItem>
             <IonItem button={true} onClick={() => {
-              setOpenNote(null);
+              if (!syncStatus || syncStatus.inSync || window.confirm(UNSAVED_CHANGES_PROMPT)) setOpenNote(null);
             }} >Local Note</IonItem>
             <IonItem button={true} onClick={handleMacrosButtonClicked}>Import Macros</IonItem>
             <IonItem button={true} onClick={handleIOFieldToggle}>Toggle Input/Output Fields</IonItem>
