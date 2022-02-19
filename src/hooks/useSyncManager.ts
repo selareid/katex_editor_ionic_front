@@ -6,8 +6,8 @@ interface syncStatus {
 }
 
 const useSyncManager = () => {
-    const [localSyncCounter, setLocalSyncCounter] = useState(0);
-    const [serverSyncedCount, setServerSyncCount] = useState(0);
+    const [localSyncCounter, setLocalSyncCounter] = useState(0); // what we've sent
+    const [serverSyncedCount, setServerSyncCount] = useState(0); // what the server has confirmed
     const [syncStatus, setSyncStatus] = useState<syncStatus>();
 
     useEffect(() => { // update sync status
