@@ -30,7 +30,7 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
   const [outputFieldWidth, setOutputFieldWidth] = useState<string>(); // also hides field when === "0"
   const [statusText, setStatusText] = useState("");
 
-  const {localSyncCounter, incrementLocalSync, serverSyncedCount, setServerSyncCount, syncStatus} = useSyncManager();
+  const {localSyncCounter, incrementLocalSync, serverSyncedCount, setServerSyncCount, syncStatus, resetSyncStatus} = useSyncManager();
 
   const menuRef = useRef<HTMLIonMenuElement>(null);
   const contentRef = useRef<HTMLIonContentElement | null>(null);
@@ -45,6 +45,7 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
 
   useEffect(() => {
     serverNoteAPI.setNoteName(openNote);
+    resetSyncStatus();
 
     //used window.history.pushState because using history (prop) for history.push(<url>) made menu unable to open
     if (openNote) window.history.pushState({}, '', "/notes/" + openNote);
@@ -67,7 +68,8 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
   }, [serverNoteAPI.note.data]);
 
   useEffect(() => {
-    setStatusText(syncStatus?.syncText || "");
+    setStatusText(n => syncStatus?.syncText || n);
+  }, [syncStatus]);
   }, [syncStatus]);
 
   useEffect(() => { // sync local to server
