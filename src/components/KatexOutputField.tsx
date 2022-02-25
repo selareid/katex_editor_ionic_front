@@ -9,7 +9,7 @@ const KatexOutputField = React.forwardRef<any, {rawKatex: string, width?: string
     useEffect(() => {
         if (renderPointRef.current) {
             // Render katex into the span
-            (renderPointRef.current as HTMLElement).innerHTML = katex.renderToString(props.rawKatex, {displayMode:true, throwOnError: false});
+            (renderPointRef.current as HTMLElement).innerHTML = katex.renderToString(props.rawKatex, {displayMode:true, trust: true, throwOnError: false});
         }
     }, [props.rawKatex]);
 
