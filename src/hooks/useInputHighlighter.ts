@@ -21,7 +21,7 @@ export interface Input {
 }
 
 const startHighlight = ['\\'];
-const endHighlight = ['&', ' ', '{','}','<','>','=', '_', '$', '^', '#', '%', '~', '\n', '?', '(', ')'];
+const endHighlight = ['&', ' ', '{','}','<','>','=', '_', '$', '^', '#', '%', '~', '\n', '?', '(', ')', '|', '[', ']', ';', ':', '"', "'", '/', '.', ','];
 const slashHighlightOrange = ['#', '$', '%', '^', '_', '~', '\\'];
 
 function getHighlightedInput(rawInput: string) {
