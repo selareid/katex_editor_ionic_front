@@ -18,7 +18,7 @@ const KatexOutputField = React.forwardRef<any, {rawKatex: string, width?: string
             catch (e) {
                 if (e instanceof katex.ParseError) {
                     // render failed, re-render - keep old height (so scroll doesn't get messed up by small element)
-                    const oldHeight = renderPoint.clientHeight;
+                    const oldHeight = renderPoint.offsetHeight;
                     renderPoint.innerHTML = katex.renderToString(props.rawKatex, {displayMode:true, trust: true, throwOnError: false});
                     renderPoint.style.height = oldHeight + "px";
                 }
