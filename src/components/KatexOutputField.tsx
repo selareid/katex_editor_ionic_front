@@ -8,8 +8,21 @@ const KatexOutputField = React.forwardRef<any, {rawKatex: string, width?: string
 
     useEffect(() => {
         if (renderPointRef.current) {
+            const renderPoint = renderPointRef.current as HTMLElement;
+
             // Render katex into the span
-            (renderPointRef.current as HTMLElement).innerHTML = katex.renderToString(props.rawKatex, {displayMode:true, trust: true, throwOnError: false});
+            try {
+                renderPoint.innerHTML = katex.renderToString(props.rawKatex, {displayMode:true, trust: true, throwOnError: true});
+                renderPoint.style.height = "";
+            }
+            catch (e) {
+                if (e instanceof katex.ParseError) {
+                    // render failed, re-render - keep old height (so scroll doesn't get messed up by small element)
+                    const oldHeight = renderPoint.clientHeight;
+                    renderPoint.innerHTML = katex.renderToString(props.rawKatex, {displayMode:true, trust: true, throwOnError: false});
+                    renderPoint.style.height = oldHeight + "px";
+                }
+            }
         }
     }, [props.rawKatex]);
 
