@@ -24,6 +24,7 @@ const startHighlight = ['\\'];
 const endHighlight = ['&', ' ', '{','}','<','>','=', '_', '$', '^', '#', '%', '~', '\n', '?', '(', ')', '|', '[', ']', ';', ':', '"', "'", '/', '.', ','];
 const slashHighlightOrange = ['#', '$', '%', '^', '_', '~', '\\'];
 const isNumeric = (num: any) => (typeof(num) === 'number' || typeof(num) === "string" && num.trim() !== '') && !isNaN(num as number);
+const isASCII = (c: string) => c.charCodeAt(0) <= 126; // non-ascii characters have undocumented behaviour with backend
 
 function getHighlightedInput(rawInput: string) {
     let newText = rawInput;
@@ -35,6 +36,13 @@ function getHighlightedInput(rawInput: string) {
     while (position < newText.length) {
         let curChar = newText[position];
         
+        if (startPos === undefined && !isASCII(curChar)) { // highlight scary characters in red
+            let insertTextP1 = '<span style="color:#FF0000">';
+            let insertTextP2 = '</span>';
+
+            newText = newText.slice(0, position) + insertTextP1 + curChar + insertTextP2 + newText.slice(position + 1);
+            position += insertTextP1.length + insertTextP2.length;
+        }
         if (startPos === undefined && curChar === '\\' && slashHighlightOrange.includes(newText[position + 1])) { // case of \<orange highlight> e.g. \_
             let insertTextP1 = '<span style="color:#FFA500">';
             let insertTextP2 = '</span>';
@@ -93,7 +101,7 @@ function getHighlightedInput(rawInput: string) {
 
             position += 1 + insertText.length;
         }
-        else if (startPos !== undefined && (endHighlight.includes(curChar) || isNumeric(curChar))) { //regular end
+        else if (startPos !== undefined && (endHighlight.includes(curChar) || isNumeric(curChar) || !isASCII(curChar))) { //regular end
             let insertText = '</span>';
 
             newText = newText.slice(0, position) + insertText + newText.slice(position);
@@ -102,6 +110,7 @@ function getHighlightedInput(rawInput: string) {
             startChar = undefined;
 
             position += 1 + insertText.length;
+            if (!isASCII(curChar)) position--; //re-process this character so it gets red-highlighted
         }
         else if (startPos !== undefined && position !== startPos && startHighlight.includes(curChar)) { // back to back highlighting e.g. \quad\quad
             //  - close previous highlight and processes this position again on next loop
