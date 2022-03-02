@@ -23,6 +23,7 @@ export interface Input {
 const startHighlight = ['\\'];
 const endHighlight = ['&', ' ', '{','}','<','>','=', '_', '$', '^', '#', '%', '~', '\n', '?', '(', ')', '|', '[', ']', ';', ':', '"', "'", '/', '.', ','];
 const slashHighlightOrange = ['#', '$', '%', '^', '_', '~', '\\'];
+const isNumeric = (num: any) => (typeof(num) === 'number' || typeof(num) === "string" && num.trim() !== '') && !isNaN(num as number);
 
 function getHighlightedInput(rawInput: string) {
     let newText = rawInput;
@@ -92,7 +93,7 @@ function getHighlightedInput(rawInput: string) {
 
             position += 1 + insertText.length;
         }
-        else if (startPos !== undefined && endHighlight.includes(curChar)) { //regular end
+        else if (startPos !== undefined && (endHighlight.includes(curChar) || isNumeric(curChar))) { //regular end
             let insertText = '</span>';
 
             newText = newText.slice(0, position) + insertText + newText.slice(position);
