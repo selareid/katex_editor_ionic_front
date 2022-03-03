@@ -5,7 +5,8 @@ export function useInputHighlighter(initialState: string | "") {
     const [highlightedInput, setHighlightedInput] = useState<string>("");
 
     useEffect(() => {
-        setHighlightedInput(getHighlightedInput(rawInput));
+        const timeOutId = setTimeout(() => setHighlightedInput(getHighlightedInput(rawInput)), 0);
+        return () => clearTimeout(timeOutId);
     }, [rawInput]);
 
     return {
