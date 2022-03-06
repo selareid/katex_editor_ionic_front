@@ -1,25 +1,87 @@
 import { useEffect, useState } from "react";
 
+export interface Input {
+    raw: string,
+    highlighted: string,
+}
+
+interface HighlightChunk {
+    raw: string,
+    highlighted: string,
+}
+
+interface HighlightState {
+    chunks: HighlightChunk[],
+    fullHighlightedString: string,
+}
+
+
 export function useInputHighlighter(initialState: string | "") {
     const [rawInput, setRawInput] = useState<string>(initialState);
-    const [highlightedInput, setHighlightedInput] = useState<string>("");
+    const [highlightState, setHighlightedState] = useState<HighlightState>({chunks: [], fullHighlightedString: ""});
+    
 
     useEffect(() => {
-        const timeOutId = setTimeout(() => setHighlightedInput(getHighlightedString(rawInput)), 0);
+        const timeOutId = setTimeout(() => highlightInput(rawInput, highlightState, setHighlightedState), 0);
         return () => clearTimeout(timeOutId);
     }, [rawInput]);
 
     return {
         input: {raw: rawInput,
-             highlighted: highlightedInput},
+             highlighted: highlightState.fullHighlightedString},
         setRawInput: setRawInput
     };
 }
 
-export interface Input {
-    raw: string,
-    highlighted: string,
+function highlightInput(inputString: string, highlightState: HighlightState, setHighlightedState: React.Dispatch<React.SetStateAction<HighlightState>>) {
+    let differenceStartPos_raw: number | null = null; // position of difference in inputString
+    let differenceStartPos_highlight: number | null = null; // position of difference in highlight string
+    let currentChunkStartRaw = 0; // chunk start position in the raw inputString
+    let currentChunkStartHighlight = 0; // chunk start position in the raw inputString
+    let differenceChunk_i = 0;
+
+    for (let chunk_i = 0; chunk_i < highlightState.chunks.length; chunk_i++) {
+        const chunk = highlightState.chunks[chunk_i];
+
+        const endOfChunkRaw = currentChunkStartRaw + chunk.raw.length;
+
+        if (inputString.substring(currentChunkStartRaw, endOfChunkRaw) === chunk.raw // no chunk difference
+            && endOfChunkRaw <= inputString.length) { // when chunk ends, raw still existing
+            currentChunkStartRaw = endOfChunkRaw;
+            currentChunkStartHighlight += chunk.highlighted.length;
+        }
+        else { //difference in this chunk
+            differenceStartPos_raw = currentChunkStartRaw;
+            differenceStartPos_highlight = currentChunkStartHighlight;
+            differenceChunk_i = chunk_i;
+            break;
+        }
+    }
+
+    if (highlightState.chunks.length > 0) { // change after cached chunks
+        differenceStartPos_raw = currentChunkStartRaw;
+        differenceStartPos_highlight = currentChunkStartHighlight;
+    }
+
+    if (currentChunkStartRaw === 0) { // <2 chunks exist or difference in first chunk
+        const [fullHighlightedString, highLightChunks] = getHighlightedString(inputString);
+        setHighlightedState({fullHighlightedString, chunks: highLightChunks});
+    }
+    else if (differenceStartPos_raw !== null && differenceStartPos_highlight !== null) { //difference detected in other chunk
+        //TODO re-highlight from chunk
+        const [rehighlightedSubString, rehighlightedChunks] = getHighlightedString(inputString.substring(differenceStartPos_raw));
+
+        let fullHighlightedString = highlightState.fullHighlightedString.substring(0, differenceStartPos_highlight) + rehighlightedSubString;
+
+        setHighlightedState({fullHighlightedString, chunks: highlightState.chunks.slice(0, differenceChunk_i).concat(rehighlightedChunks)});
+
+    }
+
+
+    //TODO set highlight state
+
 }
+
 
 const startHighlight = ['\\'];
 const endHighlight = ['&', ' ', '{','}','<','>','=', '_', '$', '^', '#', '%', '~', '\n', '?', '(', ')', '|', '[', ']', ';', ':', '"', "'", '/', '.', ','];
@@ -27,12 +89,24 @@ const slashHighlightOrange = ['#', '$', '%', '^', '_', '~', '\\'];
 const isNumeric = (num: any) => (typeof(num) === 'number' || typeof(num) === "string" && num.trim() !== '') && !isNaN(num as number);
 const isASCII = (c: string) => c.charCodeAt(0) <= 126; // non-ascii characters have undocumented behaviour with backend
 
-function getHighlightedString(rawInput: string) {
-    let newText = rawInput;
+function getHighlightedString(rawInput: string): [string, HighlightChunk[]] {
+    let newText: string = rawInput;
+    const chunks: HighlightChunk[] = [];
 
     var position = 0;
     var startPos = undefined;
     var startChar = undefined;
+    var lastChunkEnd = {raw: 0, hightlighted: 0};
+
+    function endLastChunkStartNew() {
+        let rawAdjustedPosition = position - Math.abs(rawInput.length - newText.length);
+        let rawChunk = rawInput.substring(lastChunkEnd.raw, rawAdjustedPosition);
+        let highlightedChunk = newText.substring(lastChunkEnd.hightlighted, position);
+        chunks.push({raw: rawChunk, highlighted: highlightedChunk});
+        
+        lastChunkEnd.raw = rawAdjustedPosition;
+        lastChunkEnd.hightlighted = position;
+    }
 
     while (position < newText.length) {
         let curChar = newText[position];
@@ -106,12 +180,15 @@ function getHighlightedString(rawInput: string) {
             let insertText = '</span>';
 
             newText = newText.slice(0, position) + insertText + newText.slice(position);
-
+            
+            
             startPos = undefined;
             startChar = undefined;
-
+            
             position += 1 + insertText.length;
             if (!isASCII(curChar)) position--; //re-process this character so it gets red-highlighted
+            
+            endLastChunkStartNew();
         }
         else if (startPos !== undefined && position !== startPos && startHighlight.includes(curChar)) { // back to back highlighting e.g. \quad\quad
             //  - close previous highlight and processes this position again on next loop
@@ -137,5 +214,11 @@ function getHighlightedString(rawInput: string) {
         newText = newText += '</span>';
     }
 
-    return newText;
+    //add any remaining text in a final chunk
+    if (lastChunkEnd.hightlighted < position) {
+        endLastChunkStartNew();
+    }
+
+
+    return [newText, chunks];
 }
