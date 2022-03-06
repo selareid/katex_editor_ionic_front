@@ -5,7 +5,7 @@ export function useInputHighlighter(initialState: string | "") {
     const [highlightedInput, setHighlightedInput] = useState<string>("");
 
     useEffect(() => {
-        const timeOutId = setTimeout(() => setHighlightedInput(getHighlightedInput(rawInput)), 0);
+        const timeOutId = setTimeout(() => setHighlightedInput(getHighlightedString(rawInput)), 0);
         return () => clearTimeout(timeOutId);
     }, [rawInput]);
 
@@ -27,7 +27,7 @@ const slashHighlightOrange = ['#', '$', '%', '^', '_', '~', '\\'];
 const isNumeric = (num: any) => (typeof(num) === 'number' || typeof(num) === "string" && num.trim() !== '') && !isNaN(num as number);
 const isASCII = (c: string) => c.charCodeAt(0) <= 126; // non-ascii characters have undocumented behaviour with backend
 
-function getHighlightedInput(rawInput: string) {
+function getHighlightedString(rawInput: string) {
     let newText = rawInput;
 
     var position = 0;
