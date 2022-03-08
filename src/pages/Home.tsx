@@ -1,4 +1,4 @@
-import { IonButton, IonButtons, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonMenu, IonMenuButton, IonPage, IonPopover, IonTitle, IonToolbar, ScrollDetail, SelectChangeEventDetail } from '@ionic/react';
+import { IonButton, IonButtons, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonMenu, IonMenuButton, IonPage, IonPopover, IonTitle, IonToggle, IonToolbar, ScrollDetail, SelectChangeEventDetail } from '@ionic/react';
 import { arrowDownOutline, arrowUpOutline } from 'ionicons/icons';
 import { useEffect, useRef, useState } from 'react';
 import { RouteComponentProps } from 'react-router';
@@ -31,6 +31,8 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
   const [inputFieldWidth, setInputFieldWidth] = useState<string>(); // also hides field when === "0"
   const [outputFieldWidth, setOutputFieldWidth] = useState<string>(); // also hides field when === "0"
   const [statusText, setStatusText] = useState("");
+  const [slowModeEnabled, setSlowModeEnabled] = useState(false);
+  const toggleSlowmode = () => setSlowModeEnabled(b => !b);
 
   const {localSyncCounter, incrementLocalSync, serverSyncedCount, setServerSyncCount, syncStatus, resetSyncStatus} = useSyncManager();
 
@@ -179,6 +181,10 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
             }} >Local Note</IonItem>
             <IonItem button={true} onClick={handleMacrosButtonClicked}>Import Macros</IonItem>
             <IonItem button={true} onClick={handleIOFieldToggle}>Toggle Input/Output Fields</IonItem>
+            <IonItem>
+              <IonLabel>Slowmode</IonLabel>
+              <IonToggle slot="end" color="secondary" checked={slowModeEnabled} onIonChange={() => toggleSlowmode()}/>
+            </IonItem>
           </IonList>
         </IonContent>
       </IonMenu>
@@ -193,7 +199,7 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
 
         <div id='IOFlex'>
           {inputFieldWidth !== "0" ? <KatexInputField ref={inputFieldRef} width={inputFieldWidth} defaultInput={rawKatexInput} onInput={(event: React.FormEvent<HTMLPreElement>) => setRawKatexInput((event.target as HTMLElement).innerText)} /> : null}
-          {outputFieldWidth !== "0" ? <KatexOutputField ref={outputFieldRef} width={outputFieldWidth} rawKatex={rawKatexInput}/> : null}
+          {outputFieldWidth !== "0" ? <KatexOutputField ref={outputFieldRef} width={outputFieldWidth} rawKatex={rawKatexInput} slowMode={slowModeEnabled}/> : null}
         </div>
       </IonContent>
     </IonPage>
