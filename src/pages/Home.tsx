@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { RouteComponentProps } from 'react-router';
 import KatexInputField, {KatexInputFieldRefFrame} from '../components/KatexInputField';
 import KatexOutputField from '../components/KatexOutputField';
+import KatexPrinterItem from '../components/KatexPrinterItem';
 import NoteSelectItem from '../components/NoteSelectItem';
 import ServerAPI, { Status } from '../hooks/ServerAPI';
 import useSyncManager from '../hooks/useSyncManager';
@@ -185,6 +186,7 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
               <IonLabel>Slowmode</IonLabel>
               <IonToggle slot="end" color="secondary" checked={slowModeEnabled} onIonChange={() => toggleSlowmode()}/>
             </IonItem>
+            <KatexPrinterItem/>
           </IonList>
         </IonContent>
       </IonMenu>
