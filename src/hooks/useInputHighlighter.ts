@@ -22,7 +22,7 @@ export function useInputHighlighter(initialState: string | "") {
     
 
     useEffect(() => {
-        const timeOutId = setTimeout(() => highlightInput(rawInput, highlightState, setHighlightedState), 0);
+        const timeOutId = setTimeout(() => highlightInput(cleanHTML(rawInput), highlightState, setHighlightedState), 0);
         return () => clearTimeout(timeOutId);
     }, [rawInput]);
 
@@ -31,6 +31,10 @@ export function useInputHighlighter(initialState: string | "") {
              highlighted: highlightState.fullHighlightedString},
         setRawInput: setRawInput
     };
+}
+
+function cleanHTML(rawInput: string): string {
+    return rawInput.replace(/([&])/g, "&amp;").replace(/([<])/g, "&lt;").replace(/([>])/g, "&gt;").replace(/(['])/g, "&apos;").replace(/(["])/g, "&quot;");
 }
 
 function highlightInput(inputString: string, highlightState: HighlightState, setHighlightedState: React.Dispatch<React.SetStateAction<HighlightState>>) {
