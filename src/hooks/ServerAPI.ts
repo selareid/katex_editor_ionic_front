@@ -27,7 +27,7 @@ function useNotesList() {
         })
         .then(
             (result) => {
-                setNotesList({status: {statusCode: 200, statusText: "OK"}, list: result.split("\n")})
+                setNotesList({status: {statusCode: 200, statusText: "OK"}, list: !!result ? result.split("\n") : []})
             },
             (error) => {
                 setNotesList({status: {statusCode: error.statusCode, statusText: error.statusText}, list: []});
