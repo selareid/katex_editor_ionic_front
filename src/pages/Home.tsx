@@ -21,7 +21,7 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
   const urlNoteName: string | undefined = match.params.noteName;
 
   const [openNote, setOpenNote] = useState<string | null>(urlNoteName || null);
-  const [rawKatexInput, setRawKatexInput] = useState("Initial Input\\\\[1em] UWU");
+  const [rawKatexInput, setRawKatexInput] = useState("\\text{Katex Editor} \\\\\n\\text{You are editing locally} \\\\\n\\text{Refreshing the page will reset this box}\\\\\n\\text{More info coming soon.}");
   const serverNoteAPI = ServerAPI.useServerNote(null);
   const [menuOpenCount, setMenuOpenCount] = useState(0); // for refreshing menu items when opened (such as notes list)
   const [scrollButtonDown, setScrollButtonDown] = useState(true); // scroll button direction
