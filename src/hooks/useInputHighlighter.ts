@@ -116,14 +116,14 @@ function getHighlightedString(rawInput: string): [string, HighlightChunk[]] {
         let curChar = newText[position];
         
         if (startPos === undefined && !isASCII(curChar)) { // highlight scary characters in red
-            let insertTextP1 = '<span style="color:#FF0000">';
+            let insertTextP1 = '<span class="highlight-red">';
             let insertTextP2 = '</span>';
 
             newText = newText.slice(0, position) + insertTextP1 + curChar + insertTextP2 + newText.slice(position + 1);
             position += insertTextP1.length + insertTextP2.length;
         }
         if (startPos === undefined && curChar === '\\' && slashHighlightOrange.includes(newText[position + 1])) { // case of \<orange highlight> e.g. \_
-            let insertTextP1 = '<span style="color:#FFA500">';
+            let insertTextP1 = '<span class="highlight-orange">';
             let insertTextP2 = '</span>';
 
             newText = newText.slice(0, position) + insertTextP1 + curChar + newText[position + 1] + insertTextP2 + newText.slice(position + 2);
@@ -131,7 +131,7 @@ function getHighlightedString(rawInput: string): [string, HighlightChunk[]] {
             position += 1 + insertTextP1.length + 1 + insertTextP2.length;
         }
         else if (startPos === undefined && curChar === '\\' && newText.slice(position + 1, position + 6) === '&amp;') { // case of \& cause & is &amp; in html
-            let insertTextP1 = '<span style="color:#FFA500">';
+            let insertTextP1 = '<span class="highlight-orange">';
             let insertTextP2 = '</span>';
 
             newText = newText.slice(0, position) + insertTextP1 + curChar + newText[position + 1] + insertTextP2 + newText.slice(position + 6);
@@ -140,7 +140,7 @@ function getHighlightedString(rawInput: string): [string, HighlightChunk[]] {
         }
         else if (startPos === undefined && curChar === '\\' && newText.length > position + 'color{}'.length && newText.substring(position, position+7) === '\\color{') { // case of \color{<color name>}
             // highlight the \color part
-            let insertText1 = '<span style="color:#70d14d">';
+            let insertText1 = '<span class="highlight-green">';
             let insertText2 = '</span>';
             newText = newText.slice(0, position) + insertText1 + '\\color' + insertText2 + newText.slice(position+6);
             position += insertText1.length + insertText2.length + '\\color'.length;
@@ -171,7 +171,7 @@ function getHighlightedString(rawInput: string): [string, HighlightChunk[]] {
             position++; // skip the }
         }
         else if (startPos === undefined && startHighlight.includes(curChar)) { // regular start
-            let insertText = '<span style="color:#70d14d">';
+            let insertText = '<span class="highlight-green">';
 
             newText = newText.slice(0, position) + insertText + newText.slice(position);
 

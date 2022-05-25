@@ -2,7 +2,7 @@ import './KatexInputField.css';
 import { useInputHighlighter } from '../hooks/useInputHighlighter';
 import React, { useEffect, useImperativeHandle, useRef } from 'react';
 
-const KatexInputField = React.forwardRef<any, {defaultInput?: string, onInput?: Function, width?: string}>((props, ref) => {
+const KatexInputField = React.forwardRef<any, {defaultInput?: string, onInput?: Function, width?: string, light?: boolean}>((props, ref) => {
   const inputBoxRef = useRef<HTMLPreElement>(null);
   const { input, setRawInput } = useInputHighlighter(props.defaultInput || "");
 
@@ -32,10 +32,10 @@ const KatexInputField = React.forwardRef<any, {defaultInput?: string, onInput?: 
         cur.innerText = text;
       },
   }});
-
+  
   return (
-    <div className="katexInputField katexIOElement" style={props.width ? {width: props.width} : undefined}>
-          <pre id="highlightBox" dangerouslySetInnerHTML={{__html: input.highlighted}} />
+    <div className={"katexInputField katexIOElement" + (props.light ? " light" : "")} style={props.width ? {width: props.width} : undefined}>
+          <pre id="highlightBox" className={(props.light ? " light" : "")} dangerouslySetInnerHTML={{__html: input.highlighted}} />
           <pre id="inputBox"
             ref={inputBoxRef}
             contentEditable={true}

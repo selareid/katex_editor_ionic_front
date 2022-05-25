@@ -34,6 +34,7 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
   const [statusText, setStatusText] = useState("");
   const [slowModeEnabled, setSlowModeEnabled] = useState(false);
   const toggleSlowmode = () => setSlowModeEnabled(b => !b);
+  const [lightMode, setLightMode] = useState(false);
 
   const {localSyncCounter, incrementLocalSync, serverSyncedCount, setServerSyncCount, syncStatus, resetSyncStatus} = useSyncManager();
 
@@ -93,6 +94,10 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
       incrementLocalSync();
     }
   }, [rawKatexInput]);
+
+  useEffect(() => {
+    document.body.classList.toggle('light', lightMode);
+  }, [lightMode]);
 
   
   const handleContentScroll = (event: CustomEvent<ScrollDetail>) => {
@@ -186,6 +191,10 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
               <IonLabel>Slowmode</IonLabel>
               <IonToggle slot="end" color="secondary" checked={slowModeEnabled} onIonChange={() => toggleSlowmode()}/>
             </IonItem>
+            <IonItem>
+              <IonLabel>Light Mode</IonLabel>
+              <IonToggle slot="end" color="secondary" checked={lightMode} onIonChange={_ => setLightMode(v=>!v)}/>
+            </IonItem>
             <KatexPrinterItem/>
           </IonList>
         </IonContent>
@@ -200,7 +209,7 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
         </IonFab>
 
         <div id='IOFlex'>
-          {inputFieldWidth !== "0" ? <KatexInputField ref={inputFieldRef} width={inputFieldWidth} defaultInput={rawKatexInput} onInput={(event: React.FormEvent<HTMLPreElement>) => setRawKatexInput((event.target as HTMLElement).innerText)} /> : null}
+          {inputFieldWidth !== "0" ? <KatexInputField light={lightMode} ref={inputFieldRef} width={inputFieldWidth} defaultInput={rawKatexInput} onInput={(event: React.FormEvent<HTMLPreElement>) => setRawKatexInput((event.target as HTMLElement).innerText)} /> : null}
           {outputFieldWidth !== "0" ? <KatexOutputField ref={outputFieldRef} width={outputFieldWidth} rawKatex={rawKatexInput} slowMode={slowModeEnabled}/> : null}
         </div>
       </IonContent>

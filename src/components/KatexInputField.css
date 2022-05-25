@@ -16,6 +16,11 @@
     position: relative;
 }
 
+.katexInputField.light {
+    color: rgb(34, 34, 34);
+    caret-color: rgb(51, 51, 51);
+}
+
 
 #inputBox, #highlightBox {
     margin: 0px;
@@ -42,3 +47,19 @@
     position: absolute;
     user-select: none;
 }
+
+
+.highlight-red {
+    color: #FF0000;
+}
+.highlight-orange {
+    color: #FFA500;
+}
+.highlight-green {
+    color: #70d14d;
+}
+
+
+.light > .highlight-green { color: #2a9e00; }
+.light > .highlight-orange { color: #ff8c00; }
+.light > .highlight-red { color: #FF0000; }
