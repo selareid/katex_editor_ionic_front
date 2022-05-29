@@ -21,7 +21,9 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
   const urlNoteName: string | undefined = match.params.noteName;
 
   const [openNote, setOpenNote] = useState<string | null>(urlNoteName || null);
-  const [rawKatexInput, setRawKatexInput] = useState("\\text{Katex Editor} \\\\\n\\text{You are editing locally} \\\\\n\\text{Refreshing the page will reset this box}\\\\\n\\text{More info coming soon.}");
+  const [rawKatexInput, force_setRawKatexInput] = useState("\\text{Katex Editor} \\\\\n\\text{You are editing locally} \\\\\n\\text{Refreshing the page will reset this box}\\\\\n\\text{More info coming soon.}");
+  const setRawKatexInput = (value: React.SetStateAction<string>) => {if (!viewOnly) force_setRawKatexInput(value)};
+
   const serverNoteAPI = ServerAPI.useServerNote(null);
   const [menuOpenCount, setMenuOpenCount] = useState(0); // for refreshing menu items when opened (such as notes list)
   const [scrollButtonDown, setScrollButtonDown] = useState(true); // scroll button direction
@@ -35,6 +37,7 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
   const [slowModeEnabled, setSlowModeEnabled] = useState(false);
   const toggleSlowmode = () => setSlowModeEnabled(b => !b);
   const [lightMode, setLightMode] = useState(false);
+  const [viewOnly, setViewOnly] = useState(false);
 
   const {localSyncCounter, incrementLocalSync, serverSyncedCount, setServerSyncCount, syncStatus, resetSyncStatus} = useSyncManager();
 
@@ -67,9 +70,13 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
 
   useEffect(() => { // sync server to local
     if (serverNoteAPI.note.data !== undefined && serverNoteAPI.note.data !== rawKatexInput) {
-      setRawKatexInput(serverNoteAPI.note.data);
-      forceInputFieldTextRefresh(n => n + 1);
-      setStatusText("Attempted to download note");
+      if (viewOnly) force_setRawKatexInput(serverNoteAPI.note.data);
+      else {
+        setRawKatexInput(serverNoteAPI.note.data);
+        forceInputFieldTextRefresh(n => n + 1);
+      }
+
+      setStatusText("Attempt to download note " + new Date().toLocaleTimeString());
     }
   }, [serverNoteAPI.note.data]);
 
@@ -98,6 +105,23 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
   useEffect(() => {
     document.body.classList.toggle('light', lightMode);
   }, [lightMode]);
+
+  useEffect(() => {
+    if (viewOnly === true && !!serverNoteAPI.note.name) {
+      // set input only
+      setInputFieldWidth("0");
+      setOutputFieldWidth("95vw");
+
+      const viewOnlyNoteDownloadInterval = setInterval(() => {
+        serverNoteAPI.downloadNote();
+      }, slowModeEnabled ? 3000 : 500);
+
+      return () => {
+        clearInterval(viewOnlyNoteDownloadInterval);
+      };
+    }
+  }, [viewOnly, slowModeEnabled]);
+
 
   
   const handleContentScroll = (event: CustomEvent<ScrollDetail>) => {
@@ -194,6 +218,10 @@ const Home: React.FC<NoteNamePageProps> = ({ match }) => {
             <IonItem>
               <IonLabel>Light Mode</IonLabel>
               <IonToggle slot="end" color="secondary" checked={lightMode} onIonChange={_ => setLightMode(v=>!v)}/>
+            </IonItem>
+            <IonItem>
+              <IonLabel>View-Only + Auto-Refresh</IonLabel>
+              <IonToggle slot="end" color="secondary" checked={viewOnly} onIonChange={_ => setViewOnly(v => !v)}/>
             </IonItem>
             <KatexPrinterItem/>
           </IonList>
